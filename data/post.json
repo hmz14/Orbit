@@ -1,0 +1,15 @@
+{
+  "id": "p_001",
+  "authorId": "u_001",
+  "content": "Just shipped a new feature. So excited to see how people use it! 🚀",
+  "createdAt": "2025-03-10T09:00:00.000Z",
+  "likes": ["u_002"],
+  "comments": [
+    {
+      "id": "c_001",
+      "userId": "u_002",
+      "text": "Congrats! Can't wait to try it.",
+      "createdAt": "2025-03-10T09:15:00.000Z"
+    }
+  ]
+}
