@@ -1,0 +1,48 @@
+/* Common styles: buttons, forms, layout, nav, colors, typography */
+:root {
+
+    /* ===== Brand Colors ===== */
+ 
+    --color-primary: #4f46e5;
+    --color-primary-dark: #3730a3;
+    --color-secondary: #6366f1;
+    --color-accent: #22c55e;
+ 
+    /* ===== Text Colors ===== */
+ 
+    --color-text: #111827;
+    --color-text-light: #6b7280;
+ 
+    /* ===== Background & Surfaces ===== */
+ 
+    --color-bg: #f5f7fb;
+    --color-white: #ffffff;
+    --color-surface: #eef2ff;
+    --color-border: #e5e7eb;
+ 
+    /* ===== Shadows ===== */
+ 
+    --shadow-sm: 0 4px 10px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+ 
+    /* ===== Border Radius ===== */
+ 
+    --radius-sm: 8px;
+    --radius-md: 16px;
+ 
+    /* ===== Spacing ===== */
+ 
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+ 
+    /* ===== Font Sizes ===== */
+ 
+    --text-sm: 13px;
+    --text-md: 15px;
+    --text-lg: 18px;
+    --text-xl: 24px;
+ 
+ }
