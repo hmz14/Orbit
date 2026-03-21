@@ -3,10 +3,91 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Profile</title>
+  <title>Profile – Orbit</title>
+  <link rel="stylesheet" href="../../shared/shared.css">
   <link rel="stylesheet" href="profile.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <!-- User profile interface -->
+  <!-- Top Navigation Bar -->
+  <nav class="top-nav">
+    <a href="../feed/feed.html" class="nav-brand">
+      <img src="../../assets/icons/logo.png" alt="Orbit" class="nav-logo">
+      <span class="nav-brand-text">Orbit</span>
+    </a>
+    <div class="nav-links">
+      <a href="../feed/feed.html" class="nav-link">Feed</a>
+      <a href="profile.html" class="nav-link nav-link-active">Profile</a>
+      <a href="../login/login.html" class="nav-link">Logout</a>
+      <img src="../../assets/images/profilepic.png" alt="Your profile" class="nav-avatar">
+    </div>
+  </nav>
+
+  <main class="profile-main">
+    <!-- Profile Header Card -->
+    <section class="profile-card">
+      <div class="profile-cover"></div>
+      <div class="profile-identity">
+        <img src="../../assets/images/profilepic.png" alt="Alex Williams" class="profile-avatar">
+        <div class="profile-info">
+          <h1 class="profile-name" data-profile-name>Alex Williams</h1>
+          <span class="profile-handle" data-profile-handle>@alexw</span>
+        </div>
+        <button type="button" class="btn-edit-profile">Edit Profile</button>
+      </div>
+      <div class="profile-bio-section">
+        <p class="profile-bio" data-profile-bio>
+          Just a tech enthusiast who loves to explore new places. ⛵️📷
+        </p>
+        <div class="profile-stats">
+          <span class="profile-stat">
+            <span class="profile-stat-icon" aria-hidden="true">❤</span>
+            <span data-following-count>180</span> Following
+          </span>
+          <span class="profile-stat">
+            <span class="profile-stat-icon" aria-hidden="true">👥</span>
+            <span data-followers-count>2,150</span> Followers
+          </span>
+          <span class="profile-stat">
+            <span class="profile-stat-icon" aria-hidden="true">📄</span>
+            <span data-posts-count>86</span>
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Feed Section -->
+    <section class="posts-section">
+      <h2 class="posts-heading" data-posts-heading>Alex Williams' Posts</h2>
+
+      <article class="post-card">
+        <div class="post-header">
+          <img src="../../assets/images/profilepic.png" alt="" class="post-avatar">
+          <div class="post-author">
+            <span class="post-author-name">Sarah Johnson</span>
+            <span class="post-author-handle">@alex_2_oohians</span>
+          </div>
+          <button type="button" class="post-more" aria-label="More options">⋯</button>
+        </div>
+        <p class="post-content">
+          Had a blast hiking today! Here's a view from the top 🏔️
+        </p>
+        <div class="post-image-wrapper">
+          <img
+            src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800"
+            alt="Mountain view from hiking trail"
+            class="post-image"
+          >
+        </div>
+      </article>
+
+      <!-- Additional posts will be injected by JS -->
+      <div id="posts-container"></div>
+    </section>
+  </main>
+
+  <script src="profile.js"></script>
 </body>
 </html>
