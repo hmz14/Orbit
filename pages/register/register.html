@@ -8,17 +8,24 @@
   <link rel="stylesheet" href="register.css">
 </head>
 <body>
+  <img class="brand-logo" src="../../assets/icons/orbit_logo.png" alt="Orbit">
+  <p class="register-tagline">Stay in your circle</p>
   <div class="register-card">
     <div class="register-form-section">
       <h2>Register</h2>
-      <input type="email" placeholder="Email">
-      <input type="password" placeholder="Password">
-      <input type="password" placeholder="Confirm Password">
-      <button type="submit" id="register-btn">Log In</button>
+      <form id="register-form">
+        <input type="text" id="reg-username" placeholder="Username" required>
+        <input type="email" id="reg-email" placeholder="Email" required>
+        <input type="password" id="reg-password" placeholder="Password" required>
+        <input type="password" id="reg-confirm" placeholder="Confirm Password" required>
+        <button type="submit" id="register-btn">Create account</button>
+      </form>
+      <p id="register-feedback" class="register-feedback" aria-live="polite"></p>
       <p>Already have an account? <a href="../login/login.html">Log In</a></p>
     </div>
   </div>
 
+  <script src="../../shared/storage.js"></script>
   <script src="register.js"></script>
 </body>
 </html>

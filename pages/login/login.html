@@ -8,18 +8,24 @@
   <link rel="stylesheet" href="login.css">
 </head>
 <body>
-  <img src="../../assets/icons/logo.png" alt="logo">
+  <img class="brand-logo" src="../../assets/icons/orbit_logo.png" alt="Orbit">
   <p>
     Stay in your circle
   </p>
   <div class="login-form">
     <h2>Login</h2>
-    <input type="text" placeholder="Username">
-    <input type="password" placeholder="Password">
-    <button type="submit">Login</button>
+    <form id="login-form">
+      <input type="text" id="login-username" placeholder="Username" required autocomplete="username">
+      <input type="password" id="login-password" placeholder="Password" required autocomplete="current-password">
+      <button type="submit">Login</button>
+    </form>
+    <p id="login-feedback" class="login-feedback" aria-live="polite"></p>
     <p>
       Don't have an account? <a href="../register/register.html">Register</a>
     </p>
   </div>
+
+  <script src="../../shared/storage.js"></script>
+  <script src="login.js"></script>
 </body>
 </html>

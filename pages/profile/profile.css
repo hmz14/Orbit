@@ -1,1 +1,63 @@
-/* Profile page styling */
+body {
+  font-family: "Inter", sans-serif;
+  background-color: var(--color-bg);
+  margin: 0;
+  min-height: 100vh;
+}
+
+.profile-page {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: var(--spacing-xl, 1.5rem);
+  box-sizing: border-box;
+}
+
+.hidden {
+  display: none;
+}
+
+.profile-guest {
+  background: var(--color-white, #fff);
+  padding: 1rem;
+  border-radius: var(--radius-md, 8px);
+}
+
+.profile-panel {
+  background: var(--color-white, #fff);
+  padding: var(--spacing-xl, 1.5rem);
+  border-radius: var(--radius-md, 8px);
+  box-shadow: var(--shadow-md, 0 4px 12px rgba(0, 0, 0, 0.08));
+}
+
+.profile-email {
+  color: #555;
+  margin-top: 0;
+}
+
+.profile-bio {
+  line-height: 1.5;
+}
+
+.profile-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 1rem 0;
+  font-size: 0.95rem;
+}
+
+.profile-posts-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.profile-posts-list li {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.post-time {
+  font-size: 0.8rem;
+  color: #777;
+}

@@ -4,9 +4,32 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Profile</title>
+  <link rel="stylesheet" href="../../shared/shared.css">
   <link rel="stylesheet" href="profile.css">
 </head>
 <body>
-  <!-- User profile interface -->
+  <main class="profile-page">
+    <p id="profile-guest" class="profile-guest hidden">
+      You are not logged in.
+      <a href="../login/login.html">Log in</a> or
+      <a href="../register/register.html">register</a>.
+    </p>
+
+    <section id="profile-panel" class="profile-panel hidden">
+      <h1 id="profile-username">username</h1>
+      <p id="profile-email" class="profile-email"></p>
+      <p id="profile-bio" class="profile-bio"></p>
+      <div class="profile-stats">
+        <span id="stat-following">Following: 0</span>
+        <span id="stat-followers">Followers: 0</span>
+        <span id="stat-posts">Posts: 0</span>
+      </div>
+      <h2>Your posts</h2>
+      <ul id="profile-posts-list" class="profile-posts-list"></ul>
+    </section>
+  </main>
+
+  <script src="../../shared/storage.js"></script>
+  <script src="profile.js"></script>
 </body>
 </html>

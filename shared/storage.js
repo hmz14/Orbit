@@ -1,4 +1,21 @@
-/**
- * All localStorage interaction: users, posts, comments, current user.
- * Example: getUsers(), saveUsers(), getPosts(), savePosts(), getCurrentUser()
- */
+// CMPS 350 style storage: whole app saved in localStorage with JSON.stringify / JSON.parse
+// (see Lab 6 module 4). Default data is the same as data/storage.json so first load has sample users.
+const ORBIT_STORAGE_KEY = "orbit-app-data";
+
+function getDefaultAppData() {
+  return JSON.parse("{\n  \"currentUserId\": \"u1\",\n  \"users\": [\n    {\n      \"id\": \"u1\",\n      \"username\": \"noura_k\",\n      \"email\": \"noura.khalid@example.com\",\n      \"password\": \"orbit2026\",\n      \"profilePicture\": \"images/default.png\",\n      \"bio\": \"CS student · late-night debugger · cats > dogs\",\n      \"following\": [\"u2\", \"u3\"],\n      \"followers\": [\"u2\", \"u3\"]\n    },\n    {\n      \"id\": \"u2\",\n      \"username\": \"youssef_runs\",\n      \"email\": \"youssef.rahman@example.com\",\n      \"password\": \"trackfield\",\n      \"profilePicture\": \"images/default.png\",\n      \"bio\": \"5K before sunrise. Documenting the grind.\",\n      \"following\": [\"u1\", \"u3\"],\n      \"followers\": [\"u1\", \"u3\"]\n    },\n    {\n      \"id\": \"u3\",\n      \"username\": \"layla_designs\",\n      \"email\": \"layla.m@example.com\",\n      \"password\": \"figma!42\",\n      \"profilePicture\": \"images/default.png\",\n      \"bio\": \"Product designer · obsessed with spacing and contrast\",\n      \"following\": [\"u1\", \"u2\"],\n      \"followers\": [\"u1\", \"u2\"]\n    }\n  ],\n  \"posts\": [\n    {\n      \"id\": \"p1\",\n      \"userId\": \"u1\",\n      \"content\": \"Finally refactored the auth flow. If it breaks, pretend you didn't see this post.\",\n      \"timestamp\": \"2026-03-22T07:45:00Z\",\n      \"likes\": [\"u2\", \"u3\"],\n      \"comments\": [\n        {\n          \"id\": \"c1\",\n          \"userId\": \"u2\",\n          \"content\": \"Bold move posting before the deploy finishes 😂\",\n          \"timestamp\": \"2026-03-22T07:52:00Z\"\n        },\n        {\n          \"id\": \"c2\",\n          \"userId\": \"u3\",\n          \"content\": \"Send me the Figma link if you want a quick pass on the forms.\",\n          \"timestamp\": \"2026-03-22T08:01:00Z\"\n        }\n      ]\n    },\n    {\n      \"id\": \"p2\",\n      \"userId\": \"u1\",\n      \"content\": \"Library was packed so I studied in a café. Somehow got more done with worse Wi‑Fi.\",\n      \"timestamp\": \"2026-03-21T16:10:00Z\",\n      \"likes\": [\"u3\"],\n      \"comments\": []\n    },\n    {\n      \"id\": \"p3\",\n      \"userId\": \"u2\",\n      \"content\": \"Race day Saturday. Packet pickup done — now just sleep and carbs.\",\n      \"timestamp\": \"2026-03-22T05:30:00Z\",\n      \"likes\": [\"u1\", \"u3\"],\n      \"comments\": [\n        {\n          \"id\": \"c3\",\n          \"userId\": \"u1\",\n          \"content\": \"Sub-25 or we riot. You've got this.\",\n          \"timestamp\": \"2026-03-22T05:41:00Z\"\n        }\n      ]\n    },\n    {\n      \"id\": \"p4\",\n      \"userId\": \"u2\",\n      \"content\": \"Foggy trail run. Couldn't see ten meters ahead but the rhythm felt right.\",\n      \"timestamp\": \"2026-03-20T06:15:00Z\",\n      \"likes\": [\"u1\"],\n      \"comments\": []\n    },\n    {\n      \"id\": \"p5\",\n      \"userId\": \"u3\",\n      \"content\": \"Redesigned the empty state for onboarding. Empty states are where personality lives.\",\n      \"timestamp\": \"2026-03-22T09:00:00Z\",\n      \"likes\": [\"u1\", \"u2\"],\n      \"comments\": [\n        {\n          \"id\": \"c4\",\n          \"userId\": \"u2\",\n          \"content\": \"That illustration is *chef's kiss*\",\n          \"timestamp\": \"2026-03-22T09:18:00Z\"\n        }\n      ]\n    },\n    {\n      \"id\": \"p6\",\n      \"userId\": \"u1\",\n      \"content\": \"Hot take: naming variables `data` and `temp` should require a written apology.\",\n      \"timestamp\": \"2026-03-19T21:00:00Z\",\n      \"likes\": [\"u2\", \"u3\"],\n      \"comments\": []\n    },\n    {\n      \"id\": \"p7\",\n      \"userId\": \"u3\",\n      \"content\": \"Accessibility audit done. Forty-seven small fixes and the app already feels calmer.\",\n      \"timestamp\": \"2026-03-18T14:40:00Z\",\n      \"likes\": [\"u1\"],\n      \"comments\": [\n        {\n          \"id\": \"c5\",\n          \"userId\": \"u1\",\n          \"content\": \"This is the kind of work users never notice — in the best way.\",\n          \"timestamp\": \"2026-03-18T15:02:00Z\"\n        }\n      ]\n    }\n  ]\n}\n");
+}
+
+function loadAppData() {
+  const saved = localStorage.getItem(ORBIT_STORAGE_KEY);
+  if (saved === null) {
+    const fresh = getDefaultAppData();
+    saveAppData(fresh);
+    return fresh;
+  }
+  return JSON.parse(saved);
+}
+
+function saveAppData(data) {
+  localStorage.setItem(ORBIT_STORAGE_KEY, JSON.stringify(data));
+}
