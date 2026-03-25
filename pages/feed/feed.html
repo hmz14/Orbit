@@ -3,10 +3,88 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Feed</title>
+  <title>Feed – Orbit</title>
+  <link rel="stylesheet" href="../../shared/shared.css">
   <link rel="stylesheet" href="feed.css">
+  <link rel="stylesheet" href="../post/post.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-  <!-- Main news feed -->
+
+  <header class="top-nav">
+    <div class="brand-wrap">
+      <img class="brand-logo" src="../../assets/icons/orbit_logo.png" alt="Orbit">
+      <span class="brand-name">Orbit</span>
+    </div>
+
+    <nav class="top-links" aria-label="Primary navigation">
+      <a class="top-link top-link-active" href="../feed/feed.html">Feed</a>
+      <a class="top-link" href="../profile/profile.html">Profile</a>
+      <button id="logoutBtn" type="button" class="top-link top-link-logout">Logout</button>
+    </nav>
+  </header>
+
+  <main class="feed-page">
+    <div class="feed-grid">
+
+      <!-- Left: Create Post + Feed posts -->
+      <div class="col-main">
+        <div class="card create-post-card">
+          <h2 class="create-post-title">Create Post</h2>
+          <form id="createPostForm" class="create-post-form">
+            <div class="create-post-top">
+              <img id="me-avatar" class="cp-avatar" src="../../assets/images/profile.png" alt="avatar">
+              <textarea
+                id="createPostText"
+                class="create-post-textarea"
+                rows="2"
+                placeholder="What's on your mind?"
+                maxlength="500"
+              ></textarea>
+            </div>
+            <div class="create-post-footer">
+              <button type="submit" class="btn btn-primary post-btn">Post</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Feed posts injected here -->
+        <ul id="feed-posts-list" class="orbit-posts-list"></ul>
+      </div>
+
+      <!-- Right sidebar: People + About -->
+      <div class="col-sidebar">
+        <div class="card people-card">
+          <h3 class="sidebar-title">People You May Know</h3>
+          <ul id="peopleList" class="people-list"></ul>
+        </div>
+
+        <div class="card about-card">
+          <h3 class="sidebar-title">About</h3>
+          <div class="about-user-row">
+            <img
+              id="about-avatar"
+              class="about-avatar"
+              src="../../assets/images/profile.png"
+              alt="avatar"
+            >
+            <div class="about-info">
+              <p id="about-name" class="about-name">Username</p>
+              <p id="about-handle" class="about-handle">@username</p>
+            </div>
+          </div>
+          <p id="about-bio" class="about-bio">Your bio</p>
+          <a class="btn btn-secondary about-edit-btn" href="../profile/profile.html">Edit Profile</a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="../../shared/storage.js"></script>
+  <script src="../post/post.js"></script>
+  <script src="feed.js"></script>
 </body>
 </html>

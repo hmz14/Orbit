@@ -1,1 +1,251 @@
-/* Styling for the post page */
+/* Post card styles — reused on Feed and Profile pages */
+
+.orbit-posts-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* ── Post card ── */
+.orbit-post {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 1rem 1.1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* ── Top row: avatar + author info + timestamp ── */
+.orbit-post-top {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 0.65rem;
+}
+
+.orbit-post-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #eef2ff;
+  flex-shrink: 0;
+}
+
+.orbit-post-author-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.orbit-post-author {
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: #111827;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.orbit-post-handle {
+  font-size: 0.78rem;
+  color: #6b7280;
+}
+
+.orbit-post-time {
+  font-size: 0.77rem;
+  color: #9ca3af;
+  white-space: nowrap;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* ── Content ── */
+.orbit-post-content {
+  margin: 0 0 0.75rem 0;
+  line-height: 1.6;
+  color: #111827;
+  font-size: 0.93rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ── Action bar ── */
+.orbit-post-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  border-top: 1px solid #f3f4f6;
+  padding-top: 0.6rem;
+}
+
+.orbit-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6b7280;
+  font-size: 0.875rem;
+  font-family: "Inter", sans-serif;
+  padding: 0.3rem 0.55rem;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.orbit-action-btn:hover:not(:disabled) {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.orbit-action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.orbit-action-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.orbit-action-count {
+  font-weight: 600;
+}
+
+/* Like button — active/liked state */
+.orbit-like-btn.liked {
+  color: #ef4444;
+}
+
+/* Delete button */
+.orbit-delete-btn {
+  margin-left: auto;
+  color: #9ca3af;
+  font-size: 0.82rem;
+}
+
+.orbit-delete-btn:hover:not(:disabled) {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+/* ── Comments section ── */
+.orbit-comments {
+  margin-top: 0.75rem;
+  border-top: 1px solid #f3f4f6;
+  padding-top: 0.6rem;
+}
+
+.orbit-comments-title {
+  display: none;
+}
+
+.orbit-comments-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.6rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.orbit-comment {
+  padding: 0.35rem 0;
+}
+
+.orbit-comment-empty {
+  color: #9ca3af;
+  font-size: 0.82rem;
+}
+
+.orbit-comment-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+}
+
+.orbit-comment-author {
+  font-weight: 700;
+  font-size: 0.84rem;
+  color: #111827;
+}
+
+.orbit-comment-time {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.orbit-comment-body {
+  font-size: 0.875rem;
+  color: #374151;
+  margin-top: 0.1rem;
+  line-height: 1.4;
+}
+
+/* ── Comment form ── */
+.orbit-comment-form {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.orbit-comment-input {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 0.5rem 0.7rem;
+  font-size: 0.875rem;
+  font-family: "Inter", sans-serif;
+  outline: none;
+  resize: none;
+  background: #f9fafb;
+}
+
+.orbit-comment-input:focus {
+  border-color: #4f46e5;
+  background: #fff;
+}
+
+.orbit-comment-input:disabled {
+  background: #f1f5f9;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.orbit-comment-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.orbit-btn-primary {
+  background: #4f46e5;
+  border: none;
+  color: #fff;
+  border-radius: 8px;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  font-family: "Inter", sans-serif;
+  cursor: pointer;
+}
+
+.orbit-btn-primary:hover:not(:disabled) {
+  background: #4338ca;
+}
+
+.orbit-btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.orbit-empty {
+  color: #9ca3af;
+  font-size: 0.875rem;
+  padding: 0.5rem 0;
+  list-style: none;
+}

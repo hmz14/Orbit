@@ -35,5 +35,5 @@ loginForm.addEventListener("submit", (event) => {
   appData.currentUserId = user.id;
   saveAppData(appData);
 
-  window.location.href = "../profile/profile.html";
+  window.location.href = "../feed/feed.html";
 });

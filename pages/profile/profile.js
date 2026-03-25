@@ -1,4 +1,4 @@
-// Profile page — read user + posts from storage (filter / map from Lab 5)
+// Profile page — hero layout + posts from storage (OrbitPosts)
 
 const guestEl = document.getElementById("profile-guest");
 const panelEl = document.getElementById("profile-panel");
@@ -10,6 +10,25 @@ const editEmailEl = document.getElementById("edit-email");
 const editBioEl = document.getElementById("edit-bio");
 const cancelEditBtn1 = document.getElementById("cancelEditBtn");
 const cancelEditBtn2 = document.getElementById("cancelEditBtn2");
+const logoutBtn = document.getElementById("logoutBtn");
+const navAvatarEl = document.getElementById("nav-avatar");
+const heroAvatarEl = document.getElementById("profile-hero-avatar");
+const profileHandleEl = document.getElementById("profile-handle");
+const postsTitleEl = document.getElementById("profile-posts-title");
+
+const PLACEHOLDER_AVATAR = "../../assets/images/profile.png";
+
+function getAvatarSrc(user) {
+  const pic = user && user.profilePicture ? user.profilePicture : "";
+  if (!pic || pic.includes("default.png")) return PLACEHOLDER_AVATAR;
+  if (pic.startsWith("images/")) return "../../assets/" + pic;
+  if (pic.startsWith("assets/")) return "../../" + pic;
+  return PLACEHOLDER_AVATAR;
+}
+
+function toHandle(username) {
+  return "@" + (username || "").replace(/\s+/g, "").toLowerCase();
+}
 
 const appData = loadAppData();
 
@@ -23,32 +42,79 @@ if (appData.currentUserId === null || appData.currentUserId === "") {
   } else {
     const me = matches[0];
 
-    document.getElementById("profile-username").textContent = me.username;
-    document.getElementById("profile-email").textContent = me.email;
-    document.getElementById("profile-bio").textContent =
-      me.bio === "" ? "(No bio yet)" : me.bio;
+    function refreshHeader() {
+      const avatarSrc = getAvatarSrc(me);
+      heroAvatarEl.src = avatarSrc;
+      heroAvatarEl.onerror = function () {
+        heroAvatarEl.src = PLACEHOLDER_AVATAR;
+      };
 
-    document.getElementById("stat-following").textContent =
-      "Following: " + me.following.length;
-    document.getElementById("stat-followers").textContent =
-      "Followers: " + me.followers.length;
+      if (navAvatarEl) {
+        navAvatarEl.src = avatarSrc;
+        navAvatarEl.classList.remove("hidden");
+        navAvatarEl.onerror = function () {
+          navAvatarEl.src = PLACEHOLDER_AVATAR;
+        };
+      }
 
-    const myPosts = appData.posts.filter((p) => p.userId === me.id);
-    document.getElementById("stat-posts").textContent =
-      "Posts: " + myPosts.length;
+      document.getElementById("profile-username").textContent = me.username;
+      profileHandleEl.textContent = toHandle(me.username);
+      document.getElementById("profile-email").textContent = me.email;
+      document.getElementById("profile-bio").textContent =
+        me.bio === "" ? "(No bio yet)" : me.bio;
 
-    const list = document.getElementById("profile-posts-list");
-    if (myPosts.length === 0) {
-      list.innerHTML = "<li>No posts yet.</li>";
-    } else {
-      list.innerHTML = myPosts
-        .map((p) => {
-          return `<li><span class="post-time">${p.timestamp}</span> — ${p.content}</li>`;
-        })
-        .join("");
+      const following = Array.isArray(me.following) ? me.following.length : 0;
+      const followers = Array.isArray(me.followers) ? me.followers.length : 0;
+
+      document.getElementById("stat-following").textContent =
+        "Following " + following;
+      document.getElementById("stat-followers").textContent =
+        "Followers " + followers;
+
+      postsTitleEl.textContent = me.username + "'s Posts";
     }
 
+    const list = document.getElementById("profile-posts-list");
+
+    function renderMyPosts() {
+      const myPosts = (appData.posts || []).filter((p) => p.userId === me.id);
+      document.getElementById("stat-posts").textContent =
+        "Posts " + myPosts.length;
+
+      if (window.OrbitPosts && typeof window.OrbitPosts.initPostsList === "function") {
+        window.OrbitPosts.initPostsList(list, {
+          appData,
+          posts: myPosts,
+          showDelete: true,
+          showCommentForm: true,
+        });
+        return;
+      }
+
+      if (myPosts.length === 0) {
+        list.innerHTML = "<li class='orbit-empty'>No posts yet.</li>";
+      } else {
+        list.innerHTML = myPosts
+          .map(
+            (p) =>
+              `<li><span class="orbit-post-time">${p.timestamp}</span> — ${p.content}</li>`
+          )
+          .join("");
+      }
+    }
+
+    refreshHeader();
+    renderMyPosts();
+
     panelEl.classList.remove("hidden");
+
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", () => {
+        appData.currentUserId = null;
+        saveAppData(appData);
+        window.location.href = "../login/login.html";
+      });
+    }
 
     const closeEditTab = () => {
       editTabEl.classList.add("hidden");
@@ -59,7 +125,6 @@ if (appData.currentUserId === null || appData.currentUserId === "") {
       editEmailEl.value = me.email ?? "";
       editBioEl.value = me.bio ?? "";
       editTabEl.classList.remove("hidden");
-      // Simple UX: put cursor in username by default.
       editUsernameEl.focus();
     };
 
@@ -78,26 +143,20 @@ if (appData.currentUserId === null || appData.currentUserId === "") {
         return;
       }
 
-      // Persist edits to the user object in app data.
       const userIndex = appData.users.findIndex((u) => u.id === me.id);
       if (userIndex === -1) return;
 
       appData.users[userIndex].username = newUsername;
       appData.users[userIndex].bio = newBio;
 
-      // Save and update UI.
       saveAppData(appData);
 
-      // Keep UI in sync with edited values.
       me.username = newUsername;
       me.bio = newBio;
 
-      document.getElementById("profile-username").textContent = me.username;
-      document.getElementById("profile-email").textContent = me.email;
-      document.getElementById("profile-bio").textContent =
-        me.bio === "" ? "(No bio yet)" : me.bio;
-
+      refreshHeader();
       closeEditTab();
+      renderMyPosts();
     });
   }
 }

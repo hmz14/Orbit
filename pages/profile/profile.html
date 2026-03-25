@@ -6,11 +6,26 @@
   <title>Profile – Orbit</title>
   <link rel="stylesheet" href="../../shared/shared.css">
   <link rel="stylesheet" href="profile.css">
+  <link rel="stylesheet" href="../post/post.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
+  <header class="top-nav">
+    <div class="brand-wrap">
+      <img class="brand-logo" src="../../assets/icons/orbit_logo.png" alt="Orbit">
+      <span class="brand-name">Orbit</span>
+    </div>
+
+    <nav class="top-links" aria-label="Primary navigation">
+      <a class="top-link" href="../feed/feed.html">Feed</a>
+      <a class="top-link top-link-active" href="../profile/profile.html">Profile</a>
+      <img id="nav-avatar" class="nav-avatar hidden" src="../../assets/images/profile.png" alt="">
+      <button id="logoutBtn" type="button" class="top-link top-link-logout">Logout</button>
+    </nav>
+  </header>
+
   <main class="profile-page">
     <p id="profile-guest" class="profile-guest hidden">
       You are not logged in.
@@ -18,22 +33,41 @@
       <a href="../register/register.html">register</a>.
     </p>
 
-    <section id="profile-panel" class="profile-panel hidden">
-      <div class="profile-header-row">
-        <h1 id="profile-username">username</h1>
-        <button id="editProfileBtn" type="button" class="btn btn-edit">
-          Edit Profile
-        </button>
-      </div>
+    <div id="profile-panel" class="profile-panel hidden">
+      <section class="profile-hero-card">
+        <div class="profile-cover" aria-hidden="true"></div>
+        <div class="profile-hero-body">
+          <img
+            id="profile-hero-avatar"
+            class="profile-hero-avatar"
+            src="../../assets/images/profile.png"
+            alt="Profile photo"
+          >
+          <div class="profile-hero-info">
+            <div class="profile-hero-row">
+              <div class="profile-name-block">
+                <h1 id="profile-username" class="profile-display-name">username</h1>
+                <p id="profile-handle" class="profile-handle">@username</p>
+              </div>
+              <button id="editProfileBtn" type="button" class="btn btn-secondary profile-edit-btn">
+                Edit Profile
+              </button>
+            </div>
+            <p id="profile-email" class="profile-email-small"></p>
+            <p id="profile-bio" class="profile-bio-hero"></p>
+            <div class="profile-stats-row">
+              <span id="stat-following" class="profile-stat">Following 0</span>
+              <span id="stat-followers" class="profile-stat">Followers 0</span>
+              <span id="stat-posts" class="profile-stat">Posts 0</span>
+            </div>
+          </div>
+        </div>
+      </section>
 
-      <p id="profile-email" class="profile-email"></p>
-      <p id="profile-bio" class="profile-bio"></p>
-
-      <div class="profile-stats">
-        <span id="stat-following">Following: 0</span>
-        <span id="stat-followers">Followers: 0</span>
-        <span id="stat-posts">Posts: 0</span>
-      </div>
+      <section class="profile-posts-block">
+        <h2 id="profile-posts-title" class="profile-posts-title">Your posts</h2>
+        <ul id="profile-posts-list" class="orbit-posts-list profile-posts-feed"></ul>
+      </section>
 
       <div
         id="editProfileTab"
@@ -90,13 +124,11 @@
           </div>
         </form>
       </div>
-
-      <h2>Your posts</h2>
-      <ul id="profile-posts-list" class="profile-posts-list"></ul>
-    </section>
+    </div>
   </main>
 
   <script src="../../shared/storage.js"></script>
+  <script src="../post/post.js"></script>
   <script src="profile.js"></script>
 </body>
 </html>
