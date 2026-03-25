@@ -19,14 +19,78 @@
     </p>
 
     <section id="profile-panel" class="profile-panel hidden">
-      <h1 id="profile-username">username</h1>
+      <div class="profile-header-row">
+        <h1 id="profile-username">username</h1>
+        <button id="editProfileBtn" type="button" class="btn btn-edit">
+          Edit Profile
+        </button>
+      </div>
+
       <p id="profile-email" class="profile-email"></p>
       <p id="profile-bio" class="profile-bio"></p>
+
       <div class="profile-stats">
         <span id="stat-following">Following: 0</span>
         <span id="stat-followers">Followers: 0</span>
         <span id="stat-posts">Posts: 0</span>
       </div>
+
+      <div
+        id="editProfileTab"
+        class="edit-tab hidden"
+        role="dialog"
+        aria-modal="false"
+        aria-labelledby="editProfileTitle"
+      >
+        <div class="edit-tab-header">
+          <h3 id="editProfileTitle">Edit Profile</h3>
+          <button
+            id="cancelEditBtn"
+            type="button"
+            class="icon-btn"
+            aria-label="Close"
+          >
+            ×
+          </button>
+        </div>
+
+        <form id="editProfileForm" class="edit-form">
+          <label for="edit-username" class="edit-label">Username</label>
+          <input
+            id="edit-username"
+            type="text"
+            class="edit-input"
+            autocomplete="off"
+          />
+
+          <label for="edit-email" class="edit-label">Email</label>
+          <input
+            id="edit-email"
+            type="email"
+            class="edit-input edit-input-disabled"
+            disabled
+          />
+
+          <label for="edit-bio" class="edit-label">Bio</label>
+          <textarea
+            id="edit-bio"
+            class="edit-textarea"
+            rows="4"
+          ></textarea>
+
+          <div class="edit-form-actions">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button
+              id="cancelEditBtn2"
+              type="button"
+              class="btn btn-secondary"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+
       <h2>Your posts</h2>
       <ul id="profile-posts-list" class="profile-posts-list"></ul>
     </section>
