@@ -58,8 +58,8 @@
             <p id="profile-email" class="profile-email-small"></p>
             <p id="profile-bio" class="profile-bio-hero"></p>
             <div class="profile-stats-row">
-              <span id="stat-following" class="profile-stat">Following 0</span>
-              <span id="stat-followers" class="profile-stat">Followers 0</span>
+              <button id="stat-following" class="profile-stat profile-stat-btn">Following 0</button>
+              <button id="stat-followers" class="profile-stat profile-stat-btn">Followers 0</button>
               <span id="stat-posts" class="profile-stat">Posts 0</span>
             </div>
           </div>
@@ -158,6 +158,16 @@
             </button>
           </div>
         </form>
+      </div>
+    </div>
+    <!-- Followers / Following modal -->
+    <div id="usersModal" class="users-modal hidden" role="dialog" aria-modal="true" aria-labelledby="usersModalTitle">
+      <div class="users-modal-card">
+        <div class="users-modal-header">
+          <h3 id="usersModalTitle" class="users-modal-title">Following</h3>
+          <button id="usersModalClose" class="icon-btn" aria-label="Close">×</button>
+        </div>
+        <ul id="usersModalList" class="users-modal-list"></ul>
       </div>
     </div>
   </main>

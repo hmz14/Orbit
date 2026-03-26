@@ -211,6 +211,144 @@ body {
   color: #111827;
 }
 
+.profile-stat-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: "Inter", sans-serif;
+  border-radius: 6px;
+  transition: color 0.15s ease;
+}
+
+.profile-stat-btn:hover {
+  color: #4f46e5;
+  text-decoration: underline;
+}
+
+/* —— Followers / Following modal —— */
+.users-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 300;
+  padding: 1rem;
+}
+
+.users-modal.hidden {
+  display: none;
+}
+
+.users-modal-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.18);
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  max-height: 80vh;
+  overflow: hidden;
+}
+
+.users-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem 0.75rem;
+  border-bottom: 1px solid #f1f5f9;
+  flex-shrink: 0;
+}
+
+.users-modal-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #111827;
+}
+
+.users-modal-list {
+  list-style: none;
+  margin: 0;
+  padding: 0.5rem 0;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.users-modal-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 1.25rem;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.users-modal-item:hover {
+  background: #f5f7fb;
+}
+
+.users-modal-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e0e7ff;
+  flex-shrink: 0;
+  background: #eef2ff;
+}
+
+.users-modal-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.users-modal-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #111827;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.users-modal-handle {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.users-modal-empty {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: #9ca3af;
+  font-size: 0.9rem;
+}
+
+.modal-unfollow-btn {
+  margin-left: auto;
+  flex-shrink: 0;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: "Inter", sans-serif;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff;
+  color: #374151;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.modal-unfollow-btn:hover {
+  background: #fef2f2;
+  color: #ef4444;
+  border-color: #fca5a5;
+}
+
 /* —— Two-column content row —— */
 .profile-content-row {
   display: grid;

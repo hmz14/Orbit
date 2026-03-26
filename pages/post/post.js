@@ -443,6 +443,12 @@
 
       if (typeof saveAppData === "function") saveAppData(state.appData);
 
+      // After delete, run optional callback (e.g. redirect on single-post page).
+      if (type === "delete" && typeof options.onDelete === "function") {
+        options.onDelete();
+        return;
+      }
+
       // Re-render whole list (simple and works).
       const resolved = resolvePosts(state.appData, options);
       renderPostsListShell(containerEl, Object.assign({}, options, { posts: resolved }), state);
@@ -497,6 +503,9 @@
       appData,
       posts: [post],
       showDelete: true,
+      onDelete: () => {
+        window.location.href = "../feed/feed.html";
+      },
       showCommentForm: true,
       sort: "newest",
     });

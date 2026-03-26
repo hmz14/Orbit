@@ -1,7 +1,13 @@
 // Profile page — hero layout + posts from storage (OrbitPosts)
 // Supports ?userId=<id> to view another user's profile in read-only mode.
 
-const guestEl            = document.getElementById("profile-guest");
+const guestEl             = document.getElementById("profile-guest");
+const usersModalEl        = document.getElementById("usersModal");
+const usersModalTitleEl   = document.getElementById("usersModalTitle");
+const usersModalListEl    = document.getElementById("usersModalList");
+const usersModalCloseBtn  = document.getElementById("usersModalClose");
+const statFollowingBtn    = document.getElementById("stat-following");
+const statFollowersBtn    = document.getElementById("stat-followers");
 const panelEl            = document.getElementById("profile-panel");
 const editBtn            = document.getElementById("editProfileBtn");
 const followBtn          = document.getElementById("followProfileBtn");
@@ -339,6 +345,129 @@ if (!appData.currentUserId) {
           window.location.href = "../login/login.html";
         });
       }
+
+      // ── Followers / Following modal ──────────────────────────────────────
+      const PLACEHOLDER_MODAL = "../../assets/images/profile.svg";
+
+      function openUsersModal(title, userIds, showUnfollow) {
+        usersModalTitleEl.textContent = title;
+
+        function renderModalList(ids) {
+          usersModalListEl.innerHTML = "";
+          const users = ids.map((id) => appData.users.find((u) => u.id === id)).filter(Boolean);
+
+          if (users.length === 0) {
+            const empty = document.createElement("li");
+            empty.className = "users-modal-empty";
+            empty.textContent = "No users yet.";
+            usersModalListEl.appendChild(empty);
+            return;
+          }
+
+          users.forEach((u) => {
+            const li = document.createElement("li");
+            li.className = "users-modal-item";
+
+            const avatar = document.createElement("img");
+            avatar.className = "users-modal-avatar";
+            avatar.alt = u.username;
+            avatar.src = getAvatarSrc(u);
+            avatar.onerror = function () { avatar.src = PLACEHOLDER_MODAL; };
+
+            const info = document.createElement("div");
+            info.className = "users-modal-info";
+
+            const name = document.createElement("span");
+            name.className = "users-modal-name";
+            name.textContent = u.username;
+
+            const handle = document.createElement("span");
+            handle.className = "users-modal-handle";
+            handle.textContent = toHandle(u.username);
+
+            info.appendChild(name);
+            info.appendChild(handle);
+            li.appendChild(avatar);
+            li.appendChild(info);
+
+            // Navigate to profile when clicking the row (not the button)
+            li.addEventListener("click", () => {
+              closeUsersModal();
+              const url = new URL("../profile/profile.html", window.location.href);
+              url.searchParams.set("userId", u.id);
+              window.location.href = url.toString();
+            });
+
+            // Unfollow button — only on own profile's Following list
+            if (showUnfollow) {
+              const unfollowBtn = document.createElement("button");
+              unfollowBtn.type = "button";
+              unfollowBtn.className = "modal-unfollow-btn";
+              unfollowBtn.textContent = "Unfollow";
+
+              unfollowBtn.addEventListener("click", (e) => {
+                e.stopPropagation();
+
+                if (!Array.isArray(me.following))   me.following = [];
+                if (!Array.isArray(u.followers))    u.followers  = [];
+
+                me.following = me.following.filter((id) => id !== u.id);
+                u.followers  = u.followers.filter((id) => id !== me.id);
+
+                const meIdx = appData.users.findIndex((x) => x.id === me.id);
+                const uIdx  = appData.users.findIndex((x) => x.id === u.id);
+                if (meIdx !== -1) appData.users[meIdx] = me;
+                if (uIdx  !== -1) appData.users[uIdx]  = u;
+
+                saveAppData(appData);
+                refreshHeader();
+
+                // Re-render the modal list with updated following
+                renderModalList(me.following);
+              });
+
+              li.appendChild(unfollowBtn);
+            }
+
+            usersModalListEl.appendChild(li);
+          });
+        }
+
+        renderModalList(userIds);
+        usersModalEl.classList.remove("hidden");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeUsersModal() {
+        usersModalEl.classList.add("hidden");
+        document.body.style.overflow = "";
+      }
+
+      if (statFollowingBtn) {
+        statFollowingBtn.addEventListener("click", () => {
+          const ids = Array.isArray(targetUser.following) ? targetUser.following : [];
+          openUsersModal("Following", ids, isOwnProfile);
+        });
+      }
+
+      if (statFollowersBtn) {
+        statFollowersBtn.addEventListener("click", () => {
+          const ids = Array.isArray(targetUser.followers) ? targetUser.followers : [];
+          openUsersModal("Followers", ids, false);
+        });
+      }
+
+      if (usersModalCloseBtn) usersModalCloseBtn.addEventListener("click", closeUsersModal);
+
+      if (usersModalEl) {
+        usersModalEl.addEventListener("click", (e) => {
+          if (e.target === usersModalEl) closeUsersModal();
+        });
+      }
+
+      window.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeUsersModal();
+      });
     }
   }
 }

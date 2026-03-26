@@ -261,8 +261,7 @@
       return;
     }
 
-    // Keep it compact; you can show more later if needed.
-    followedUsers.slice(0, 3).forEach((u) => {
+    followedUsers.forEach((u) => {
       const li = document.createElement("li");
       li.className = "people-item";
       li.dataset.userId = u.id;
@@ -396,6 +395,9 @@
     pendingImages = [];
     renderImagePreviews();
     saveAndRefresh();
+
+    // Scroll the new post into view
+    feedPostsListEl.scrollIntoView({ behavior: "smooth", block: "start" });
   });
 
   // First render
