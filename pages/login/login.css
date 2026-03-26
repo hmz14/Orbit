@@ -1,6 +1,6 @@
-/* Import font if needed, or rely on system fonts */
+
 body {
-    font-family: 'Inter', sans-serif; /* Or your preferred font */
+    font-family: 'Inter', sans-serif; 
     background-color: var(--color-bg);
     margin: 0;
     min-height: 100vh;
@@ -10,7 +10,7 @@ body {
     justify-content: center;
 }
 
-/* Logo and tagline */
+
 .brand-logo {
     max-width: min(360px, 90vw);
     width: 100%;
@@ -26,17 +26,16 @@ body > p {
     margin-bottom: var(--spacing-xl);
 }
 
-/* Login Card Container */
 .login-form {
     background-color: var(--color-white);
-    padding: var(--spacing-xl); /* 32px */
-    border-radius: var(--radius-md); /* 16px */
+    padding: var(--spacing-xl); 
+    border-radius: var(--radius-md); 
     box-shadow: var(--shadow-md);
     width: 100%;
     max-width: 400px;
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-md); /* 16px gap between inputs */
+    gap: var(--spacing-md); 
     box-sizing: border-box;
 }
 
@@ -60,7 +59,6 @@ body > p {
     gap: var(--spacing-md);
 }
 
-/* Form Inputs */
 .login-form input {
     padding: var(--spacing-md);
     border: 1px solid var(--color-border);
@@ -74,7 +72,6 @@ body > p {
     border-color: var(--color-primary);
 }
 
-/* Login Button */
 .login-form button {
     background-color: var(--color-primary);
     color: var(--color-white);
@@ -92,7 +89,6 @@ body > p {
     background-color: var(--color-primary-dark);
 }
 
-/* Register Link */
 .login-form p {
     text-align: center;
     margin-top: var(--spacing-md);

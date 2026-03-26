@@ -1,9 +1,9 @@
-// Feed / Home page — creates posts, follow/unfollow, renders feed
+
 
 (function () {
   const appData = loadAppData();
 
-  // If not logged in, send to login
+ 
   if (!appData.currentUserId) {
     window.location.href = "../login/login.html";
     return;
@@ -15,7 +15,7 @@
     return;
   }
 
-  // DOM elements
+  
   const logoutBtn          = document.getElementById("logoutBtn");
   const createPostForm     = document.getElementById("createPostForm");
   const createPostText     = document.getElementById("createPostText");
@@ -37,7 +37,7 @@
 
   const PLACEHOLDER_AVATAR = "../../assets/images/profile.svg";
 
-  // Get avatar src for a user, fallback to placeholder
+ 
   function getAvatarSrc(user) {
     const pic = user && user.profilePicture ? user.profilePicture : "";
     if (!pic || pic.includes("default.png")) return PLACEHOLDER_AVATAR;
@@ -51,7 +51,7 @@
     return "@" + (username || "").replace(/\s+/g, "").toLowerCase();
   }
 
-  // Save and re-render everything
+ 
   function saveAndRefresh() {
     saveAppData(appData);
     renderTopInfo();
@@ -63,8 +63,8 @@
     renderFeedPosts();
   }
 
-  // ── Image upload previews ──
-  let pendingImages = []; // array of base64 strings
+ 
+  let pendingImages = []; 
 
   function renderImagePreviews() {
     cpImagePreviews.innerHTML = "";
@@ -115,7 +115,7 @@
     });
   });
 
-  // Top info: avatar, about card
+ 
   function renderTopInfo() {
     const src = getAvatarSrc(currentUser);
 
@@ -132,7 +132,7 @@
     return new Set(Array.isArray(currentUser.following) ? currentUser.following : []);
   }
 
-  // People You May Know — users not yet followed
+ 
   function renderPeopleYouMayKnow() {
     const following = getFollowingSet();
     const others = (appData.users || []).filter(
@@ -149,7 +149,7 @@
       return;
     }
 
-    // Show enough items so the sidebar can scroll without clicking "View more".
+    
     others.slice(0, 8).forEach((u) => {
       peopleListEl.appendChild(createPeopleItem(u));
     });
@@ -244,7 +244,7 @@
     });
   }
 
-  // Following — users you already follow (unfollow lives here)
+  
   function renderFollowing() {
     const following = getFollowingSet();
     const followedUsers = (appData.users || []).filter(
@@ -333,13 +333,12 @@
       target.followers.push(me.id);
     }
 
-    // keep currentUser in sync
     currentUser.following = me.following;
 
     saveAndRefresh();
   }
 
-  // Get feed posts: current user + people they follow
+  
   function getFeedPosts() {
     if (window.OrbitPosts && typeof window.OrbitPosts.getFeedPosts === "function") {
       return window.OrbitPosts.getFeedPosts(appData);
@@ -349,7 +348,6 @@
     return (appData.posts || []).filter((p) => allowed.has(p.userId));
   }
 
-  // Render the post feed using the reusable post module
   function renderFeedPosts() {
     const posts = getFeedPosts();
     if (window.OrbitPosts && typeof window.OrbitPosts.initPostsList === "function") {
@@ -365,14 +363,12 @@
     }
   }
 
-  // Logout
   logoutBtn.addEventListener("click", () => {
     appData.currentUserId = null;
     saveAppData(appData);
     window.location.href = "../login/login.html";
   });
 
-  // Create post
   createPostForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const text = (createPostText.value || "").trim();
@@ -396,17 +392,14 @@
     renderImagePreviews();
     saveAndRefresh();
 
-    // Scroll the new post into view
     feedPostsListEl.scrollIntoView({ behavior: "smooth", block: "start" });
   });
 
-  // First render
   renderTopInfo();
   renderPeopleYouMayKnow();
   renderFollowing();
   renderFeedPosts();
 
-  // People "View more" overlay
   if (peopleViewMoreBtn && peopleMoreTabEl) {
     const openTab = () => {
       peopleMoreTabEl.classList.remove("hidden");

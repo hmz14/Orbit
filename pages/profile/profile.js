@@ -1,5 +1,3 @@
-// Profile page — hero layout + posts from storage (OrbitPosts)
-// Supports ?userId=<id> to view another user's profile in read-only mode.
 
 const guestEl             = document.getElementById("profile-guest");
 const usersModalEl        = document.getElementById("usersModal");
@@ -71,7 +69,6 @@ if (!appData.currentUserId) {
       guestEl.textContent = "User not found.";
       guestEl.classList.remove("hidden");
     } else {
-      // Nav avatar always shows the currently-logged-in user
       if (navAvatarEl) {
         navAvatarEl.src    = getAvatarSrc(me);
         navAvatarEl.classList.remove("hidden");
@@ -83,7 +80,6 @@ if (!appData.currentUserId) {
         heroAvatarEl.src    = avatarSrc;
         heroAvatarEl.onerror = function () { heroAvatarEl.src = PLACEHOLDER_AVATAR; };
 
-        // Keep the create-post avatar in sync
         if (pcpAvatarEl) {
           pcpAvatarEl.src    = getAvatarSrc(me);
           pcpAvatarEl.onerror = function () { pcpAvatarEl.src = PLACEHOLDER_AVATAR; };
@@ -138,16 +134,14 @@ if (!appData.currentUserId) {
       renderPosts();
     panelEl.classList.remove("hidden");
 
-      // ── Own profile ──────────────────────────────────────────────────────────
       if (isOwnProfile) {
         if (editBtn)   editBtn.classList.remove("hidden");
         if (followBtn) followBtn.classList.add("hidden");
 
-        // Show create-post card
+        
         if (createPostSectionEl) createPostSectionEl.classList.remove("hidden");
 
-        // ── Edit Profile ──
-        let pendingAvatarBase64 = null; // base64 of newly chosen photo, or null
+        let pendingAvatarBase64 = null; 
 
     const closeEditTab = () => {
       editTabEl.classList.add("hidden");
@@ -158,7 +152,6 @@ if (!appData.currentUserId) {
       editUsernameEl.value = me.username ?? "";
           editEmailEl.value    = me.email    ?? "";
           editBioEl.value      = me.bio      ?? "";
-          // Prefill preview with current avatar
           if (editAvatarPreview) {
             editAvatarPreview.src    = getAvatarSrc(me);
             editAvatarPreview.onerror = function () { editAvatarPreview.src = PLACEHOLDER_AVATAR; };
@@ -172,7 +165,6 @@ if (!appData.currentUserId) {
     cancelEditBtn1.addEventListener("click", closeEditTab);
     cancelEditBtn2.addEventListener("click", closeEditTab);
 
-        // Live preview when user picks a new photo
         if (editAvatarInput) {
           editAvatarInput.addEventListener("change", () => {
             const file = editAvatarInput.files && editAvatarInput.files[0];
@@ -206,7 +198,6 @@ if (!appData.currentUserId) {
           me.bio      = newBio;
           if (pendingAvatarBase64) me.profilePicture = pendingAvatarBase64;
 
-          // Also update nav avatar immediately
           if (navAvatarEl) navAvatarEl.src = getAvatarSrc(me);
 
       refreshHeader();
@@ -214,7 +205,6 @@ if (!appData.currentUserId) {
           renderPosts();
         });
 
-        // ── Create Post ──
         let pendingPostImages = [];
 
         function renderPostImagePreviews() {
@@ -295,7 +285,6 @@ if (!appData.currentUserId) {
         }
 
       } else {
-        // ── Viewing another user's profile ────────────────────────────────────
         if (editBtn)              editBtn.classList.add("hidden");
         if (editTabEl)            editTabEl.classList.add("hidden");
         if (createPostSectionEl)  createPostSectionEl.classList.add("hidden");
@@ -337,7 +326,6 @@ if (!appData.currentUserId) {
         }
       }
 
-      // Logout always available
       if (logoutBtn) {
         logoutBtn.addEventListener("click", () => {
           appData.currentUserId = null;
@@ -346,7 +334,6 @@ if (!appData.currentUserId) {
         });
       }
 
-      // ── Followers / Following modal ──────────────────────────────────────
       const PLACEHOLDER_MODAL = "../../assets/images/profile.svg";
 
       function openUsersModal(title, userIds, showUnfollow) {
@@ -390,7 +377,6 @@ if (!appData.currentUserId) {
             li.appendChild(avatar);
             li.appendChild(info);
 
-            // Navigate to profile when clicking the row (not the button)
             li.addEventListener("click", () => {
               closeUsersModal();
               const url = new URL("../profile/profile.html", window.location.href);
@@ -398,7 +384,6 @@ if (!appData.currentUserId) {
               window.location.href = url.toString();
             });
 
-            // Unfollow button — only on own profile's Following list
             if (showUnfollow) {
               const unfollowBtn = document.createElement("button");
               unfollowBtn.type = "button";
@@ -422,7 +407,6 @@ if (!appData.currentUserId) {
                 saveAppData(appData);
                 refreshHeader();
 
-                // Re-render the modal list with updated following
                 renderModalList(me.following);
               });
 

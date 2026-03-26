@@ -1,5 +1,4 @@
-// Register page — Lab 5 DOM + events, Lab 6 localStorage through storage.js
-
+  
 const registerForm = document.getElementById("register-form");
 const feedbackEl = document.getElementById("register-feedback");
 

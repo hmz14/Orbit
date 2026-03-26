@@ -1,6 +1,3 @@
-// Orbit Posts (UI + logic)
-// Student-style goal: reuse the same post rendering on home + profile pages.
-// Uses only vanilla JS + localStorage (shared/storage.js already has loadAppData/saveAppData).
 
 (function () {
   function ensurePostStyles() {
@@ -14,7 +11,6 @@
     link.id = "orbit-post-styles";
     link.rel = "stylesheet";
 
-    // Try to load post.css from the same folder as this post.js.
     const current = document.currentScript && document.currentScript.src;
     if (current && current.includes("post.js")) {
       link.href = current.replace("post.js", "post.css");
@@ -40,7 +36,6 @@
   }
 
   function getCommentContent(comment) {
-    // your storage uses `content`, but other docs sometimes say `text`.
     return safeStr(comment.content ?? comment.text);
   }
 
@@ -81,8 +76,6 @@
 
   function resolvePosts(appData, options) {
     if (Array.isArray(options.posts)) {
-      // options.posts might be a static array from initial render.
-      // So we re-resolve by id from the current appData to avoid stale UI after delete.
       const ids = options.posts
         .map((p) => (typeof p === "string" ? p : p && p.id ? p.id : null))
         .filter(Boolean);
@@ -129,7 +122,6 @@
     const iLiked     = currentUserId && Array.isArray(post.likes) && post.likes.includes(currentUserId);
     const isOwn      = currentUserId && post.userId === currentUserId;
 
-    // ── Top row: avatar + author info + time ──
     const topRow = document.createElement("div");
     topRow.className = "orbit-post-top";
 
@@ -167,7 +159,6 @@
     timeEl.className = "orbit-post-time";
     timeEl.textContent = postTime;
 
-    // Wrap avatar + author info so clicking either opens that user's profile
     const authorLink = document.createElement("div");
     authorLink.className = "orbit-post-author-link";
     authorLink.title = "View " + author + "'s profile";
@@ -183,12 +174,10 @@
     topRow.appendChild(authorLink);
     topRow.appendChild(timeEl);
 
-    // ── Content ──
     const contentEl = document.createElement("p");
     contentEl.className = "orbit-post-content";
     contentEl.textContent = safeStr(post.content);
 
-    // ── Images ──
     const images = Array.isArray(post.images) ? post.images.filter(Boolean) : [];
     let imagesEl = null;
     if (images.length > 0) {
@@ -204,7 +193,6 @@
       });
     }
 
-    // ── Action bar ──
     const actionBar = document.createElement("div");
     actionBar.className = "orbit-post-actions";
 
@@ -234,7 +222,6 @@
     commentBtn.addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
-      // Commenting happens via the comment form below.
     });
 
     actionBar.appendChild(likeBtn);
@@ -249,7 +236,6 @@
         e.preventDefault();
         e.stopPropagation();
 
-        // Custom delete confirmation modal
         const overlay = document.createElement("div");
         overlay.className = "orbit-delete-overlay";
 
@@ -282,7 +268,6 @@
       actionBar.appendChild(deleteBtn);
     }
 
-    // ── Comments section ──
     const commentsWrap = document.createElement("div");
     commentsWrap.className = "orbit-comments";
 
@@ -434,14 +419,11 @@
   }
 
   function renderPostsListShell(containerEl, options, state) {
-    // Profile page uses a <ul> with an id (profile-posts-list).
-    // Feed might use a <div>, so we handle both.
     if (containerEl.tagName === "UL") {
       renderPostsList({ containerEl, posts: options.posts, state, options });
       return;
     }
 
-    // Otherwise create a <ul> inside it.
     containerEl.innerHTML = "";
     const ul = document.createElement("ul");
     ul.className = "orbit-posts-list";
@@ -452,7 +434,6 @@
   function initPostsList(containerEl, options = {}) {
     ensurePostStyles();
 
-    // State we update when user clicks like/comment/delete.
     const appData = options.appData || (typeof loadAppData === "function" ? loadAppData() : null);
     if (!appData) return;
 
@@ -471,13 +452,11 @@
 
       if (typeof saveAppData === "function") saveAppData(state.appData);
 
-      // After delete, run optional callback (e.g. redirect on single-post page).
       if (type === "delete" && typeof options.onDelete === "function") {
         options.onDelete();
         return;
       }
 
-      // Re-render whole list (simple and works).
       const resolved = resolvePosts(state.appData, options);
       renderPostsListShell(containerEl, Object.assign({}, options, { posts: resolved }), state);
     };
@@ -544,11 +523,9 @@
     initSinglePostPage,
     getFeedPosts,
     getUserPosts,
-    // also expose for later if needed
     buildUsersById,
   };
 
-  // Auto-init on the single post page.
   if (document.getElementById("single-post-container")) {
     initSinglePostPage();
   }

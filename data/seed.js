@@ -1,15 +1,3 @@
-/**
- * Seed data for Orbit — 40 users and 60 posts.
- * All data is written to localStorage on first load via initStorage() in storage.js.
- * No JSON file fetch required.
- *
- * Demo credentials (any of these work on the login page):
- *   zara@example.com  / Password1
- *   finn@example.com  / Password1
- *   priya@example.com / Password1
- *   … every user follows the pattern: email = username@example.com, password = Password1
- */
-
 const PFP = [
     "assets/profile_pic/WhatsApp Image 2026-03-26 at 20.29.32.jpeg",
     "assets/profile_pic/WhatsApp Image 2026-03-26 at 20.29.32 (1).jpeg",
@@ -447,7 +435,6 @@ const SEED_USERS = [
 ];
 
 const SEED_POSTS = [
-    // ── u1 (zara) ──────────────────────────────────────────────────────────────
     {
         id: "p1",
         userId: "u1",
@@ -489,7 +476,6 @@ const SEED_POSTS = [
         likes: ["u2"],
         comments: [],
     },
-    // ── u2 (finn) ──────────────────────────────────────────────────────────────
     {
         id: "p5",
         userId: "u2",
@@ -531,7 +517,6 @@ const SEED_POSTS = [
         likes: ["u1", "u17"],
         comments: [],
     },
-    // ── u3 (priya) ─────────────────────────────────────────────────────────────
     {
         id: "p9",
         userId: "u3",
@@ -573,7 +558,6 @@ const SEED_POSTS = [
         likes: ["u7"],
         comments: [],
     },
-    // ── u4 (dario) ─────────────────────────────────────────────────────────────
     {
         id: "p13",
         userId: "u4",
@@ -605,7 +589,6 @@ const SEED_POSTS = [
             { id: "c11", userId: "u9", content: "Post-mortems without action items should be illegal.", timestamp: "2026-03-22T10:55:00Z" },
         ],
     },
-    // ── u5 (yuki) ──────────────────────────────────────────────────────────────
     {
         id: "p16",
         userId: "u5",
@@ -638,7 +621,6 @@ const SEED_POSTS = [
             { id: "c14", userId: "u6", content: "What was the biggest win — startup time or image loading?", timestamp: "2026-03-22T11:40:00Z" },
         ],
     },
-    // ── u6 (chen) ──────────────────────────────────────────────────────────────
     {
         id: "p19",
         userId: "u6",
@@ -670,7 +652,6 @@ const SEED_POSTS = [
             { id: "c16", userId: "u32", content: "Which leaderboard? I want to track the progress.", timestamp: "2026-03-21T14:55:00Z" },
         ],
     },
-    // ── u7 (amira) ─────────────────────────────────────────────────────────────
     {
         id: "p22",
         userId: "u7",
@@ -692,7 +673,6 @@ const SEED_POSTS = [
             { id: "c18", userId: "u16", content: "That is the dream team composition. How often does it actually happen?", timestamp: "2026-03-24T09:45:00Z" },
         ],
     },
-    // ── u8 (leo) ───────────────────────────────────────────────────────────────
     {
         id: "p24",
         userId: "u8",
@@ -712,8 +692,7 @@ const SEED_POSTS = [
         timestamp: "2026-03-24T14:00:00Z",
         likes: ["u20", "u7"],
         comments: [],
-    },
-    // ── u9 (sofia) ─────────────────────────────────────────────────────────────
+    },      
     {
         id: "p26",
         userId: "u9",
@@ -734,7 +713,6 @@ const SEED_POSTS = [
         likes: ["u4", "u40"],
         comments: [],
     },
-    // ── u10 (marc) ─────────────────────────────────────────────────────────────
     {
         id: "p28",
         userId: "u10",
@@ -755,7 +733,6 @@ const SEED_POSTS = [
         likes: ["u8", "u1"],
         comments: [],
     },
-    // ── u11 (nina) ─────────────────────────────────────────────────────────────
     {
         id: "p30",
         userId: "u11",
@@ -776,7 +753,6 @@ const SEED_POSTS = [
         likes: ["u24", "u34"],
         comments: [],
     },
-    // ── u12 (jax) ──────────────────────────────────────────────────────────────
     {
         id: "p32",
         userId: "u12",
@@ -788,7 +764,6 @@ const SEED_POSTS = [
             { id: "c23", userId: "u3", content: "Multi-region is the difference between an incident and a Tuesday. 100%.", timestamp: "2026-03-26T08:52:00Z" },
         ],
     },
-    // ── u13 (lila) ─────────────────────────────────────────────────────────────
     {
         id: "p33",
         userId: "u13",
@@ -800,7 +775,6 @@ const SEED_POSTS = [
             { id: "c24", userId: "u25", content: "fr-CH locale is incredibly specific. How did you even discover it?", timestamp: "2026-03-25T13:25:00Z" },
         ],
     },
-    // ── u14 (hugo) ─────────────────────────────────────────────────────────────
     {
         id: "p34",
         userId: "u14",
@@ -810,7 +784,6 @@ const SEED_POSTS = [
         likes: ["u8", "u19", "u35"],
         comments: [],
     },
-    // ── u15 (cleo) ─────────────────────────────────────────────────────────────
     {
         id: "p35",
         userId: "u15",
@@ -822,7 +795,6 @@ const SEED_POSTS = [
             { id: "c25", userId: "u16", content: "This is the insight that most tech teams never internalise. The docs ARE the product.", timestamp: "2026-03-24T17:28:00Z" },
         ],
     },
-    // ── u16 (sam) ──────────────────────────────────────────────────────────────
     {
         id: "p36",
         userId: "u16",
@@ -834,7 +806,6 @@ const SEED_POSTS = [
             { id: "c26", userId: "u10", content: "Year two problems being different is exactly what growth looks like. Good sign.", timestamp: "2026-03-23T12:22:00Z" },
         ],
     },
-    // ── u17 (ivy) ──────────────────────────────────────────────────────────────
     {
         id: "p37",
         userId: "u17",
@@ -844,7 +815,6 @@ const SEED_POSTS = [
         likes: ["u2", "u6", "u28"],
         comments: [],
     },
-    // ── u18 (rex) ──────────────────────────────────────────────────────────────
     {
         id: "p38",
         userId: "u18",
@@ -856,7 +826,6 @@ const SEED_POSTS = [
             { id: "c27", userId: "u35", content: "Procedural generation is one of the most satisfying things to implement. How large do the dungeons get?", timestamp: "2026-03-22T17:30:00Z" },
         ],
     },
-    // ── u19 (mia) ──────────────────────────────────────────────────────────────
     {
         id: "p39",
         userId: "u19",
@@ -866,7 +835,6 @@ const SEED_POSTS = [
         likes: ["u14", "u25", "u39"],
         comments: [],
     },
-    // ── u20 (ben) ──────────────────────────────────────────────────────────────
     {
         id: "p40",
         userId: "u20",
@@ -878,7 +846,6 @@ const SEED_POSTS = [
             { id: "c28", userId: "u8", content: "Controlled panic with good documentation. Sending this to my team.", timestamp: "2026-03-21T08:28:00Z" },
         ],
     },
-    // ── u21 (ola) ──────────────────────────────────────────────────────────────
     {
         id: "p41",
         userId: "u21",
@@ -888,7 +855,6 @@ const SEED_POSTS = [
         likes: ["u22"],
         comments: [],
     },
-    // ── u22 (kat) ──────────────────────────────────────────────────────────────
     {
         id: "p42",
         userId: "u22",
@@ -900,7 +866,6 @@ const SEED_POSTS = [
             { id: "c29", userId: "u27", content: "Fragment back stacks are genuinely cursed. You are not alone in this.", timestamp: "2026-03-21T15:25:00Z" },
         ],
     },
-    // ── u23 (drew) ─────────────────────────────────────────────────────────────
     {
         id: "p43",
         userId: "u23",
@@ -910,7 +875,6 @@ const SEED_POSTS = [
         likes: ["u9", "u28", "u33"],
         comments: [],
     },
-    // ── u24 (val) ──────────────────────────────────────────────────────────────
     {
         id: "p44",
         userId: "u24",
@@ -922,7 +886,6 @@ const SEED_POSTS = [
             { id: "c30", userId: "u3", content: "EXPLAIN ANALYZE is underutilised by so many developers. This needs to be in every onboarding guide.", timestamp: "2026-03-20T13:30:00Z" },
         ],
     },
-    // ── u25 (eli) ──────────────────────────────────────────────────────────────
     {
         id: "p45",
         userId: "u25",
@@ -932,7 +895,6 @@ const SEED_POSTS = [
         likes: ["u13", "u39", "u40"],
         comments: [],
     },
-    // ── u26 (noa) ──────────────────────────────────────────────────────────────
     {
         id: "p46",
         userId: "u26",
@@ -944,7 +906,6 @@ const SEED_POSTS = [
             { id: "c31", userId: "u27", content: "The internet café setup with decent upload speed is the dream. What city?", timestamp: "2026-03-19T09:28:00Z" },
         ],
     },
-    // ── u27 (rio) ──────────────────────────────────────────────────────────────
     {
         id: "p47",
         userId: "u27",
@@ -954,7 +915,6 @@ const SEED_POSTS = [
         likes: ["u7", "u15", "u22"],
         comments: [],
     },
-    // ── u28 (jem) ──────────────────────────────────────────────────────────────
     {
         id: "p48",
         userId: "u28",
@@ -967,7 +927,6 @@ const SEED_POSTS = [
             { id: "c33", userId: "u40", content: "Congratulations on the submission. What is the main contribution?", timestamp: "2026-03-18T11:40:00Z" },
         ],
     },
-    // ── u29 (ash) ──────────────────────────────────────────────────────────────
     {
         id: "p49",
         userId: "u29",
@@ -979,7 +938,6 @@ const SEED_POSTS = [
             { id: "c34", userId: "u38", content: "Culture coherence at scale is the hardest engineering problem nobody talks about enough.", timestamp: "2026-03-18T15:30:00Z" },
         ],
     },
-    // ── u30 (sky) ──────────────────────────────────────────────────────────────
     {
         id: "p50",
         userId: "u30",
@@ -989,7 +947,6 @@ const SEED_POSTS = [
         likes: ["u24", "u36"],
         comments: [],
     },
-    // ── u31 (zion) ─────────────────────────────────────────────────────────────
     {
         id: "p51",
         userId: "u31",
@@ -1001,7 +958,6 @@ const SEED_POSTS = [
             { id: "c35", userId: "u20", content: "34% is enormous. What was the biggest culprit — overprovisioned instances?", timestamp: "2026-03-17T14:58:00Z" },
         ],
     },
-    // ── u32 (luna) ─────────────────────────────────────────────────────────────
     {
         id: "p52",
         userId: "u32",
@@ -1011,7 +967,6 @@ const SEED_POSTS = [
         likes: ["u6", "u17", "u28"],
         comments: [],
     },
-    // ── u33 (kade) ─────────────────────────────────────────────────────────────
     {
         id: "p53",
         userId: "u33",
@@ -1023,7 +978,6 @@ const SEED_POSTS = [
             { id: "c36", userId: "u23", content: "EXPLAIN ANALYZE is underutilised by so many devs. This should be in every onboarding guide.", timestamp: "2026-03-16T13:28:00Z" },
         ],
     },
-    // ── u34 (vera) ─────────────────────────────────────────────────────────────
     {
         id: "p54",
         userId: "u34",
@@ -1033,7 +987,6 @@ const SEED_POSTS = [
         likes: ["u11", "u21"],
         comments: [],
     },
-    // ── u35 (theo) ─────────────────────────────────────────────────────────────
     {
         id: "p55",
         userId: "u35",
@@ -1046,7 +999,6 @@ const SEED_POSTS = [
             { id: "c38", userId: "u34", content: "18 months is real commitment. What was the turning point?", timestamp: "2026-03-15T15:40:00Z" },
         ],
     },
-    // ── u36 (iris) ─────────────────────────────────────────────────────────────
     {
         id: "p56",
         userId: "u36",
@@ -1058,7 +1010,6 @@ const SEED_POSTS = [
             { id: "c39", userId: "u21", content: "Building the environment and letting the community form naturally. That is exactly how you get something real.", timestamp: "2026-03-14T10:28:00Z" },
         ],
     },
-    // ── u37 (cole) ─────────────────────────────────────────────────────────────
     {
         id: "p57",
         userId: "u37",
@@ -1068,7 +1019,6 @@ const SEED_POSTS = [
         likes: ["u13", "u33", "u39"],
         comments: [],
     },
-    // ── u38 (bex) ──────────────────────────────────────────────────────────────
     {
         id: "p58",
         userId: "u38",
@@ -1080,7 +1030,6 @@ const SEED_POSTS = [
             { id: "c40", userId: "u29", content: "18% from three words. That is the kind of result that makes stakeholders speechless.", timestamp: "2026-03-13T09:25:00Z" },
         ],
     },
-    // ── u39 (nile) ─────────────────────────────────────────────────────────────
     {
         id: "p59",
         userId: "u39",
@@ -1090,7 +1039,6 @@ const SEED_POSTS = [
         likes: ["u19", "u25", "u32"],
         comments: [],
     },
-    // ── u40 (rue) ──────────────────────────────────────────────────────────────
     {
         id: "p60",
         userId: "u40",
@@ -1103,7 +1051,6 @@ const SEED_POSTS = [
         ],
     },
 
-    // ── Photo posts ────────────────────────────────────────────────────────────
     {
         id: "p61",
         userId: "u1",

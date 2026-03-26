@@ -38,7 +38,6 @@ body {
     box-sizing: border-box;
 }
 
-/* Left: Form Section */
 .register-form-section {
     flex: 1;
     display: flex;
@@ -112,7 +111,6 @@ body {
     text-decoration: underline;
 }
 
-/* Right: Photo Upload Section */
 .register-photo-section {
     display: flex;
     flex-direction: column;
