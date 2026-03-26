@@ -488,3 +488,105 @@
   list-style: none;
   text-align: center;
 }
+
+/* ── Delete confirmation modal ── */
+.orbit-delete-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+  animation: orbit-fade-in 0.15s ease;
+}
+
+@keyframes orbit-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.orbit-delete-modal {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  padding: 1.75rem 1.75rem 1.5rem;
+  width: 100%;
+  max-width: 360px;
+  animation: orbit-slide-up 0.18s ease;
+}
+
+@keyframes orbit-slide-up {
+  from { transform: translateY(12px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+.orbit-delete-modal-icon {
+  width: 48px;
+  height: 48px;
+  background: #fef2f2;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  font-size: 1.4rem;
+}
+
+.orbit-delete-modal-title {
+  margin: 0 0 0.4rem;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #111827;
+  text-align: center;
+}
+
+.orbit-delete-modal-body {
+  margin: 0 0 1.5rem;
+  font-size: 0.88rem;
+  color: #6b7280;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.orbit-delete-modal-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.orbit-delete-cancel-btn {
+  flex: 1;
+  padding: 0.65rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fff;
+  color: #374151;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: "Inter", sans-serif;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.orbit-delete-cancel-btn:hover {
+  background: #f9fafb;
+}
+
+.orbit-delete-confirm-btn {
+  flex: 1;
+  padding: 0.65rem;
+  border: none;
+  border-radius: 10px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 700;
+  font-family: "Inter", sans-serif;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.orbit-delete-confirm-btn:hover {
+  background: #dc2626;
+}

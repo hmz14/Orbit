@@ -97,7 +97,7 @@ if (!appData.currentUserId) {
           emailEl.style.display = isOwnProfile ? "" : "none";
         }
 
-        document.getElementById("profile-bio").textContent =
+      document.getElementById("profile-bio").textContent =
           (targetUser.bio || "").trim() ? targetUser.bio : "(No bio yet)";
 
         const following = Array.isArray(targetUser.following) ? targetUser.following.length : 0;
@@ -108,35 +108,35 @@ if (!appData.currentUserId) {
 
         postsTitleEl.textContent =
           (isOwnProfile ? "Your" : targetUser.username + "'s") + " Posts";
-      }
+    }
 
-      const list = document.getElementById("profile-posts-list");
+    const list = document.getElementById("profile-posts-list");
 
       function renderPosts() {
         const userPosts = (appData.posts || []).filter((p) => p.userId === targetUser.id);
         document.getElementById("stat-posts").textContent = "Posts " + userPosts.length;
 
-        if (window.OrbitPosts && typeof window.OrbitPosts.initPostsList === "function") {
-          window.OrbitPosts.initPostsList(list, {
-            appData,
+      if (window.OrbitPosts && typeof window.OrbitPosts.initPostsList === "function") {
+        window.OrbitPosts.initPostsList(list, {
+          appData,
             posts: userPosts,
             showDelete: isOwnProfile,
-            showCommentForm: true,
-            cardIsView: true,
-          });
-          return;
-        }
+          showCommentForm: true,
+          cardIsView: true,
+        });
+        return;
+      }
 
         list.innerHTML = userPosts.length === 0
           ? "<li class='orbit-empty'>No posts yet.</li>"
           : userPosts
               .map((p) => `<li><span class="orbit-post-time">${p.timestamp}</span> — ${p.content}</li>`)
-              .join("");
-      }
+          .join("");
+    }
 
-      refreshHeader();
+    refreshHeader();
       renderPosts();
-      panelEl.classList.remove("hidden");
+    panelEl.classList.remove("hidden");
 
       // ── Own profile ──────────────────────────────────────────────────────────
       if (isOwnProfile) {
@@ -149,13 +149,13 @@ if (!appData.currentUserId) {
         // ── Edit Profile ──
         let pendingAvatarBase64 = null; // base64 of newly chosen photo, or null
 
-        const closeEditTab = () => {
-          editTabEl.classList.add("hidden");
+    const closeEditTab = () => {
+      editTabEl.classList.add("hidden");
           pendingAvatarBase64 = null;
-        };
+    };
 
-        const openEditTab = () => {
-          editUsernameEl.value = me.username ?? "";
+    const openEditTab = () => {
+      editUsernameEl.value = me.username ?? "";
           editEmailEl.value    = me.email    ?? "";
           editBioEl.value      = me.bio      ?? "";
           // Prefill preview with current avatar
@@ -164,13 +164,13 @@ if (!appData.currentUserId) {
             editAvatarPreview.onerror = function () { editAvatarPreview.src = PLACEHOLDER_AVATAR; };
           }
           pendingAvatarBase64 = null;
-          editTabEl.classList.remove("hidden");
-          editUsernameEl.focus();
-        };
+      editTabEl.classList.remove("hidden");
+      editUsernameEl.focus();
+    };
 
-        editBtn.addEventListener("click", openEditTab);
-        cancelEditBtn1.addEventListener("click", closeEditTab);
-        cancelEditBtn2.addEventListener("click", closeEditTab);
+    editBtn.addEventListener("click", openEditTab);
+    cancelEditBtn1.addEventListener("click", closeEditTab);
+    cancelEditBtn2.addEventListener("click", closeEditTab);
 
         // Live preview when user picks a new photo
         if (editAvatarInput) {
@@ -186,9 +186,9 @@ if (!appData.currentUserId) {
           });
         }
 
-        editFormEl.addEventListener("submit", (e) => {
-          e.preventDefault();
-          const newUsername = (editUsernameEl.value || "").trim();
+    editFormEl.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const newUsername = (editUsernameEl.value || "").trim();
           const newBio      = (editBioEl.value      || "").trim();
           if (!newUsername) { editUsernameEl.focus(); return; }
 
@@ -200,17 +200,17 @@ if (!appData.currentUserId) {
           if (pendingAvatarBase64) {
             appData.users[idx].profilePicture = pendingAvatarBase64;
           }
-          saveAppData(appData);
+      saveAppData(appData);
 
-          me.username = newUsername;
+      me.username = newUsername;
           me.bio      = newBio;
           if (pendingAvatarBase64) me.profilePicture = pendingAvatarBase64;
 
           // Also update nav avatar immediately
           if (navAvatarEl) navAvatarEl.src = getAvatarSrc(me);
 
-          refreshHeader();
-          closeEditTab();
+      refreshHeader();
+      closeEditTab();
           renderPosts();
         });
 

@@ -376,7 +376,7 @@
   createPostForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const text = (createPostText.value || "").trim();
-    if (!text) return;
+    if (!text && pendingImages.length === 0) return;
 
     const newPost = {
       id:        "p_" + Date.now().toString(36),

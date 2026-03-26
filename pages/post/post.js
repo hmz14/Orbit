@@ -248,8 +248,36 @@
       deleteBtn.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
-        if (!confirm("Delete this post?")) return;
-        onAction("delete", post.id);
+
+        // Custom delete confirmation modal
+        const overlay = document.createElement("div");
+        overlay.className = "orbit-delete-overlay";
+
+        overlay.innerHTML =
+          `<div class="orbit-delete-modal">` +
+            `<h3 class="orbit-delete-modal-title">Delete post?</h3>` +
+            `<p class="orbit-delete-modal-body">This action cannot be undone. The post will be permanently removed.</p>` +
+            `<div class="orbit-delete-modal-actions">` +
+              `<button class="orbit-delete-cancel-btn" type="button">Cancel</button>` +
+              `<button class="orbit-delete-confirm-btn" type="button">Delete</button>` +
+            `</div>` +
+          `</div>`;
+
+        const close = () => document.body.removeChild(overlay);
+
+        overlay.querySelector(".orbit-delete-cancel-btn").addEventListener("click", close);
+        overlay.querySelector(".orbit-delete-confirm-btn").addEventListener("click", () => {
+          close();
+          onAction("delete", post.id);
+        });
+        overlay.addEventListener("click", (ev) => {
+          if (ev.target === overlay) close();
+        });
+        document.addEventListener("keydown", function esc(ev) {
+          if (ev.key === "Escape") { close(); document.removeEventListener("keydown", esc); }
+        });
+
+        document.body.appendChild(overlay);
       });
       actionBar.appendChild(deleteBtn);
     }
