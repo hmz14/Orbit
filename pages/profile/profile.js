@@ -1,6 +1,3 @@
-// Profile page — hero layout + posts from storage (OrbitPosts)
-// Supports ?userId=<id> to view another user's profile in read-only mode.
-
 const guestEl             = document.getElementById("profile-guest");
 const usersModalEl        = document.getElementById("usersModal");
 const usersModalTitleEl   = document.getElementById("usersModalTitle");
@@ -50,8 +47,13 @@ function toHandle(username) {
 
 const appData = loadAppData();
 
-const urlParams  = new URLSearchParams(window.location.search);
-const viewUserId = urlParams.get("userId");
+const queryString = window.location.search.substring(1);
+const params = queryString.split("&");
+let viewUserId = null;
+for (let i = 0; i < params.length; i++) {
+  let pair = params[i].split("=");
+  if (pair[0] === "userId") viewUserId = pair[1];
+}
 
 if (!appData.currentUserId) {
   guestEl.classList.remove("hidden");
@@ -71,7 +73,6 @@ if (!appData.currentUserId) {
       guestEl.textContent = "User not found.";
       guestEl.classList.remove("hidden");
     } else {
-      // Nav avatar always shows the currently-logged-in user
       if (navAvatarEl) {
         navAvatarEl.src    = getAvatarSrc(me);
         navAvatarEl.classList.remove("hidden");
@@ -83,7 +84,6 @@ if (!appData.currentUserId) {
         heroAvatarEl.src    = avatarSrc;
         heroAvatarEl.onerror = function () { heroAvatarEl.src = PLACEHOLDER_AVATAR; };
 
-        // Keep the create-post avatar in sync
         if (pcpAvatarEl) {
           pcpAvatarEl.src    = getAvatarSrc(me);
           pcpAvatarEl.onerror = function () { pcpAvatarEl.src = PLACEHOLDER_AVATAR; };
@@ -100,8 +100,8 @@ if (!appData.currentUserId) {
       document.getElementById("profile-bio").textContent =
           (targetUser.bio || "").trim() ? targetUser.bio : "(No bio yet)";
 
-        const following = Array.isArray(targetUser.following) ? targetUser.following.length : 0;
-        const followers = Array.isArray(targetUser.followers) ? targetUser.followers.length : 0;
+        const following = targetUser.following && targetUser.following.length !== undefined ? targetUser.following.length : 0;
+        const followers = targetUser.followers && targetUser.followers.length !== undefined ? targetUser.followers.length : 0;
 
         document.getElementById("stat-following").textContent = "Following " + following;
         document.getElementById("stat-followers").textContent = "Followers " + followers;
@@ -138,16 +138,13 @@ if (!appData.currentUserId) {
       renderPosts();
     panelEl.classList.remove("hidden");
 
-      // ── Own profile ──────────────────────────────────────────────────────────
       if (isOwnProfile) {
         if (editBtn)   editBtn.classList.remove("hidden");
         if (followBtn) followBtn.classList.add("hidden");
 
-        // Show create-post card
         if (createPostSectionEl) createPostSectionEl.classList.remove("hidden");
 
-        // ── Edit Profile ──
-        let pendingAvatarBase64 = null; // base64 of newly chosen photo, or null
+        let pendingAvatarBase64 = null;
 
     const closeEditTab = () => {
       editTabEl.classList.add("hidden");
@@ -158,7 +155,6 @@ if (!appData.currentUserId) {
       editUsernameEl.value = me.username ?? "";
           editEmailEl.value    = me.email    ?? "";
           editBioEl.value      = me.bio      ?? "";
-          // Prefill preview with current avatar
           if (editAvatarPreview) {
             editAvatarPreview.src    = getAvatarSrc(me);
             editAvatarPreview.onerror = function () { editAvatarPreview.src = PLACEHOLDER_AVATAR; };
@@ -172,15 +168,33 @@ if (!appData.currentUserId) {
     cancelEditBtn1.addEventListener("click", closeEditTab);
     cancelEditBtn2.addEventListener("click", closeEditTab);
 
-        // Live preview when user picks a new photo
         if (editAvatarInput) {
           editAvatarInput.addEventListener("change", () => {
             const file = editAvatarInput.files && editAvatarInput.files[0];
             if (!file) return;
             const reader = new FileReader();
             reader.onload = (e) => {
-              pendingAvatarBase64 = e.target.result;
-              if (editAvatarPreview) editAvatarPreview.src = pendingAvatarBase64;
+              const img = new Image();
+              img.onload = () => {
+                const canvas = document.createElement("canvas");
+                let width = img.width;
+                let height = img.height;
+                const MAX = 400;
+                if (width > height && width > MAX) {
+                  height = Math.round((height * MAX) / width);
+                  width = MAX;
+                } else if (height > MAX) {
+                  width = Math.round((width * MAX) / height);
+                  height = MAX;
+                }
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0, width, height);
+                pendingAvatarBase64 = canvas.toDataURL("image/jpeg", 0.7);
+                if (editAvatarPreview) editAvatarPreview.src = pendingAvatarBase64;
+              };
+              img.src = e.target.result;
             };
             reader.readAsDataURL(file);
           });
@@ -189,32 +203,41 @@ if (!appData.currentUserId) {
     editFormEl.addEventListener("submit", (e) => {
       e.preventDefault();
       const newUsername = (editUsernameEl.value || "").trim();
-          const newBio      = (editBioEl.value      || "").trim();
-          if (!newUsername) { editUsernameEl.focus(); return; }
+      const newEmail    = (editEmailEl.value    || "").trim();
+      const newBio      = (editBioEl.value      || "").trim();
+      if (!newUsername) { editUsernameEl.focus(); return; }
+      if (!newEmail) { editEmailEl.focus(); return; }
 
-          const idx = appData.users.findIndex((u) => u.id === me.id);
-          if (idx === -1) return;
+      const idx = appData.users.findIndex((u) => u.id === me.id);
+      if (idx === -1) return;
 
-          appData.users[idx].username = newUsername;
-          appData.users[idx].bio      = newBio;
-          if (pendingAvatarBase64) {
-            appData.users[idx].profilePicture = pendingAvatarBase64;
-          }
-      saveAppData(appData);
+      appData.users[idx].username = newUsername;
+      appData.users[idx].email    = newEmail;
+      appData.users[idx].bio      = newBio;
+      if (pendingAvatarBase64) {
+        appData.users[idx].profilePicture = pendingAvatarBase64;
+      }
+      const success = saveAppData(appData);
+      if (!success) {
+        appData.users[idx].username = me.username;
+        appData.users[idx].email    = me.email;
+        appData.users[idx].bio      = me.bio;
+        appData.users[idx].profilePicture = me.profilePicture;
+        return;
+      }
 
       me.username = newUsername;
-          me.bio      = newBio;
-          if (pendingAvatarBase64) me.profilePicture = pendingAvatarBase64;
+      me.email    = newEmail;
+      me.bio      = newBio;
+      if (pendingAvatarBase64) me.profilePicture = pendingAvatarBase64;
 
-          // Also update nav avatar immediately
-          if (navAvatarEl) navAvatarEl.src = getAvatarSrc(me);
+      if (navAvatarEl) navAvatarEl.src = getAvatarSrc(me);
 
       refreshHeader();
       closeEditTab();
-          renderPosts();
-        });
+      renderPosts();
+    });
 
-        // ── Create Post ──
         let pendingPostImages = [];
 
         function renderPostImagePreviews() {
@@ -246,24 +269,41 @@ if (!appData.currentUserId) {
 
         if (pcpImagesEl) {
           pcpImagesEl.addEventListener("change", () => {
-            const files     = Array.from(pcpImagesEl.files);
+            const files = pcpImagesEl.files;
+            if (!files) return;
             const remaining = 4 - pendingPostImages.length;
-            const toAdd     = files.slice(0, remaining);
+            let added = 0;
 
-            const readers = toAdd.map(
-              (file) =>
-                new Promise((resolve) => {
-                  const reader = new FileReader();
-                  reader.onload = (ev) => resolve(ev.target.result);
-                  reader.readAsDataURL(file);
-                })
-            );
-
-            Promise.all(readers).then((results) => {
-              pendingPostImages = pendingPostImages.concat(results);
-              renderPostImagePreviews();
-              pcpImagesEl.value = "";
-            });
+            for (let i = 0; i < files.length; i++) {
+              if (added >= remaining) break;
+              const reader = new FileReader();
+              reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                  const canvas = document.createElement("canvas");
+                  let width = img.width;
+                  let height = img.height;
+                  const MAX = 800;
+                  if (width > height && width > MAX) {
+                    height = Math.round((height * MAX) / width);
+                    width = MAX;
+                  } else if (height > MAX) {
+                    width = Math.round((width * MAX) / height);
+                    height = MAX;
+                  }
+                  canvas.width = width;
+                  canvas.height = height;
+                  const ctx = canvas.getContext("2d");
+                  ctx.drawImage(img, 0, 0, width, height);
+                  pendingPostImages.push(canvas.toDataURL("image/jpeg", 0.7));
+                  renderPostImagePreviews();
+                };
+                img.src = e.target.result;
+              };
+              reader.readAsDataURL(files[i]);
+              added++;
+            }
+            pcpImagesEl.value = "";
           });
         }
 
@@ -283,9 +323,13 @@ if (!appData.currentUserId) {
               comments:  [],
             };
 
-            if (!Array.isArray(appData.posts)) appData.posts = [];
+            if (!appData.posts || appData.posts.length === undefined) appData.posts = [];
             appData.posts.push(newPost);
-            saveAppData(appData);
+            const success = saveAppData(appData);
+            if (!success) {
+              appData.posts.pop();
+              return;
+            }
 
             if (pcpTextEl) pcpTextEl.value = "";
             pendingPostImages = [];
@@ -295,7 +339,6 @@ if (!appData.currentUserId) {
         }
 
       } else {
-        // ── Viewing another user's profile ────────────────────────────────────
         if (editBtn)              editBtn.classList.add("hidden");
         if (editTabEl)            editTabEl.classList.add("hidden");
         if (createPostSectionEl)  createPostSectionEl.classList.add("hidden");
@@ -304,7 +347,7 @@ if (!appData.currentUserId) {
           followBtn.classList.remove("hidden");
 
           function updateFollowBtn() {
-            const iFollow = Array.isArray(me.following) && me.following.includes(targetUser.id);
+            const iFollow = me.following && me.following.length !== undefined && me.following.includes(targetUser.id);
             followBtn.textContent = iFollow ? "Unfollow" : "Follow";
             followBtn.className   =
               "btn " + (iFollow ? "btn-secondary" : "btn-primary") + " profile-follow-btn";
@@ -313,8 +356,8 @@ if (!appData.currentUserId) {
           updateFollowBtn();
 
           followBtn.addEventListener("click", () => {
-            if (!Array.isArray(me.following))         me.following = [];
-            if (!Array.isArray(targetUser.followers)) targetUser.followers = [];
+            if (!me.following || me.following.length === undefined)         me.following = [];
+            if (!targetUser.followers || targetUser.followers.length === undefined) targetUser.followers = [];
 
             const iFollow = me.following.includes(targetUser.id);
             if (iFollow) {
@@ -337,7 +380,6 @@ if (!appData.currentUserId) {
         }
       }
 
-      // Logout always available
       if (logoutBtn) {
         logoutBtn.addEventListener("click", () => {
           appData.currentUserId = null;
@@ -346,7 +388,6 @@ if (!appData.currentUserId) {
         });
       }
 
-      // ── Followers / Following modal ──────────────────────────────────────
       const PLACEHOLDER_MODAL = "../../assets/images/profile.svg";
 
       function openUsersModal(title, userIds, showUnfollow) {
@@ -390,7 +431,6 @@ if (!appData.currentUserId) {
             li.appendChild(avatar);
             li.appendChild(info);
 
-            // Navigate to profile when clicking the row (not the button)
             li.addEventListener("click", () => {
               closeUsersModal();
               const url = new URL("../profile/profile.html", window.location.href);
@@ -398,7 +438,6 @@ if (!appData.currentUserId) {
               window.location.href = url.toString();
             });
 
-            // Unfollow button — only on own profile's Following list
             if (showUnfollow) {
               const unfollowBtn = document.createElement("button");
               unfollowBtn.type = "button";
@@ -408,8 +447,8 @@ if (!appData.currentUserId) {
               unfollowBtn.addEventListener("click", (e) => {
                 e.stopPropagation();
 
-                if (!Array.isArray(me.following))   me.following = [];
-                if (!Array.isArray(u.followers))    u.followers  = [];
+                if (!me.following || me.following.length === undefined)   me.following = [];
+                if (!u.followers || u.followers.length === undefined)    u.followers  = [];
 
                 me.following = me.following.filter((id) => id !== u.id);
                 u.followers  = u.followers.filter((id) => id !== me.id);
@@ -422,7 +461,6 @@ if (!appData.currentUserId) {
                 saveAppData(appData);
                 refreshHeader();
 
-                // Re-render the modal list with updated following
                 renderModalList(me.following);
               });
 
@@ -445,14 +483,14 @@ if (!appData.currentUserId) {
 
       if (statFollowingBtn) {
         statFollowingBtn.addEventListener("click", () => {
-          const ids = Array.isArray(targetUser.following) ? targetUser.following : [];
+          const ids = targetUser.following && targetUser.following.length !== undefined ? targetUser.following : [];
           openUsersModal("Following", ids, isOwnProfile);
         });
       }
 
       if (statFollowersBtn) {
         statFollowersBtn.addEventListener("click", () => {
-          const ids = Array.isArray(targetUser.followers) ? targetUser.followers : [];
+          const ids = targetUser.followers && targetUser.followers.length !== undefined ? targetUser.followers : [];
           openUsersModal("Followers", ids, false);
         });
       }

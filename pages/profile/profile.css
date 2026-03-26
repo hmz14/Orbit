@@ -7,7 +7,6 @@ body {
   flex-direction: column;
 }
 
-/* —— Navbar (same idea as Feed) —— */
 .top-nav {
   display: flex;
   align-items: center;
@@ -81,7 +80,6 @@ body {
   display: none;
 }
 
-/* —— Page —— */
 .profile-page {
   flex: 1;
   max-width: 1400px;
@@ -109,7 +107,6 @@ body {
   gap: 1.25rem;
 }
 
-/* —— Hero card (banner + avatar like mockup) —— */
 .profile-hero-card {
   background: #fff;
   border-radius: 16px;
@@ -226,7 +223,6 @@ body {
   text-decoration: underline;
 }
 
-/* —— Followers / Following modal —— */
 .users-modal {
   position: fixed;
   inset: 0;
@@ -349,7 +345,6 @@ body {
   border-color: #fca5a5;
 }
 
-/* —— Two-column content row —— */
 .profile-content-row {
   display: grid;
   grid-template-columns: 320px 1fr;
@@ -357,13 +352,10 @@ body {
   align-items: start;
 }
 
-/* When the create-post card is hidden (visiting another user),
-   let the posts block stretch full width automatically */
 .profile-content-row > .profile-create-post.hidden + .profile-posts-block {
   grid-column: 1 / -1;
 }
 
-/* —— Posts section —— */
 .profile-posts-block {
   width: 100%;
 }
@@ -375,12 +367,10 @@ body {
   color: #111827;
 }
 
-/* Use orbit post cards only — no extra borders on li */
 .profile-posts-feed {
   padding: 0;
 }
 
-/* —— Buttons (edit form) —— */
 .btn {
   border-radius: 10px;
   padding: 0.6rem 1rem;
@@ -398,7 +388,7 @@ body {
 }
 
 .btn-primary:hover {
-  filter: brightness(0.98);
+  opacity: 0.9;
 }
 
 .btn-secondary {
@@ -427,14 +417,14 @@ body {
   background: #f8fafc;
 }
 
-/* —— Edit overlay —— */
 .edit-tab {
   position: fixed;
   top: 4.5rem;
   left: 50%;
   right: auto;
   transform: translateX(-50%);
-  width: min(400px, calc(100vw - 2rem));
+  width: calc(100vw - 2rem);
+  max-width: 400px;
   background: #fff;
   border: 1px solid #e5e7eb;
   border-radius: 16px;
@@ -497,7 +487,6 @@ body {
   margin-top: 0.25rem;
 }
 
-/* —— Edit form: avatar upload —— */
 .edit-avatar-wrap {
   display: flex;
   align-items: center;
@@ -542,7 +531,6 @@ body {
   display: none;
 }
 
-/* —— Create Post card (profile page) —— */
 .profile-create-post {
   position: sticky;
   top: 5rem;
@@ -697,7 +685,6 @@ body {
     position: static;
   }
 
-  /* Full-width posts when create card is hidden */
   .profile-content-row > .profile-create-post.hidden + .profile-posts-block {
     grid-column: 1;
   }

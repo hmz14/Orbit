@@ -1,8 +1,5 @@
-/* Post card styles — reused on Feed and Profile pages */
-
 .hidden { display: none; }
 
-/* ── Single post page layout ── */
 .post-page-body {
   margin: 0;
   min-height: 100vh;
@@ -12,7 +9,6 @@
   font-family: "Inter", sans-serif;
 }
 
-/* Shared navbar — matches feed & profile */
 .top-nav {
   display: flex;
   align-items: center;
@@ -125,7 +121,6 @@
   gap: 1rem;
 }
 
-/* ── Post card ── */
 .orbit-post {
   background: #ffffff;
   border: 1px solid #ebebf0;
@@ -144,7 +139,6 @@
   box-shadow: 0 4px 20px rgba(79, 70, 229, 0.1), 0 1px 4px rgba(0,0,0,0.04);
 }
 
-/* ── Top row: avatar + author info + timestamp ── */
 .orbit-post-top {
   display: flex;
   align-items: center;
@@ -212,7 +206,6 @@
   font-weight: 500;
 }
 
-/* ── Content ── */
 .orbit-post-content {
   margin: 0 0 1rem 0;
   line-height: 1.65;
@@ -223,7 +216,6 @@
   padding-left: calc(44px + 0.75rem);
 }
 
-/* ── Post images ── */
 .orbit-post-images {
   display: grid;
   gap: 3px;
@@ -232,17 +224,14 @@
   margin: 0 0 0.9rem 0;
 }
 
-/* 1 image: full width */
 .orbit-post-images--1 {
   grid-template-columns: 1fr;
 }
 
-/* 2 images: side by side */
 .orbit-post-images--2 {
   grid-template-columns: 1fr 1fr;
 }
 
-/* 3 images: left tall, right two stacked */
 .orbit-post-images--3 {
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
@@ -252,7 +241,6 @@
   grid-row: 1 / 3;
 }
 
-/* 4 images: 2x2 grid */
 .orbit-post-images--4 {
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
@@ -281,7 +269,6 @@
   opacity: 0.92;
 }
 
-/* ── Action bar ── */
 .orbit-post-actions {
   display: flex;
   align-items: center;
@@ -327,7 +314,6 @@
   font-size: 0.82rem;
 }
 
-/* Like button — active/liked state */
 .orbit-like-btn.liked {
   color: #ef4444;
 }
@@ -337,13 +323,11 @@
   color: #dc2626;
 }
 
-/* Comment button hover */
 .orbit-comment-btn:hover:not(:disabled) {
   background: #f0f9ff;
   color: #0ea5e9;
 }
 
-/* Delete button */
 .orbit-delete-btn {
   margin-left: auto;
   color: #d1d5db;
@@ -355,7 +339,6 @@
   color: #ef4444;
 }
 
-/* ── Comments section ── */
 .orbit-comments {
   margin-top: 0.85rem;
   border-top: 1px solid #f0f1f5;
@@ -413,7 +396,6 @@
   line-height: 1.45;
 }
 
-/* ── Comment form ── */
 .orbit-comment-form {
   display: flex;
   gap: 0.5rem;
@@ -489,7 +471,6 @@
   text-align: center;
 }
 
-/* ── Delete confirmation modal ── */
 .orbit-delete-overlay {
   position: fixed;
   inset: 0;
@@ -499,12 +480,6 @@
   justify-content: center;
   z-index: 1000;
   padding: 1rem;
-  animation: orbit-fade-in 0.15s ease;
-}
-
-@keyframes orbit-fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
 }
 
 .orbit-delete-modal {
@@ -514,12 +489,6 @@
   padding: 1.75rem 1.75rem 1.5rem;
   width: 100%;
   max-width: 360px;
-  animation: orbit-slide-up 0.18s ease;
-}
-
-@keyframes orbit-slide-up {
-  from { transform: translateY(12px); opacity: 0; }
-  to   { transform: translateY(0);    opacity: 1; }
 }
 
 .orbit-delete-modal-icon {

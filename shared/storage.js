@@ -1,5 +1,3 @@
-// All app state lives exclusively in localStorage under this key.
-// seed.js must be loaded before this file — it provides SEED_USERS and SEED_POSTS.
 const ORBIT_STORAGE_KEY = "orbit-app-data";
 
 function getDefaultAppData() {
@@ -16,7 +14,6 @@ function loadAppData() {
   const data = JSON.parse(saved);
   let dirty = false;
 
-  // Sync profile pictures from seed (so updated PFP paths take effect).
   const seedUsersById = {};
   (SEED_USERS || []).forEach((u) => { seedUsersById[u.id] = u; });
   (data.users || []).forEach((u) => {
@@ -27,9 +24,8 @@ function loadAppData() {
     }
   });
 
-  // Merge any new seed posts that don't exist yet in stored data.
-  const existingIds = new Set((data.posts || []).map((p) => p.id));
-  const newPosts = (SEED_POSTS || []).filter((p) => !existingIds.has(p.id));
+  const existingIds = (data.posts || []).map((p) => p.id);
+  const newPosts = (SEED_POSTS || []).filter((p) => !existingIds.includes(p.id));
   if (newPosts.length > 0) {
     data.posts = (data.posts || []).concat(newPosts);
     dirty = true;
@@ -40,5 +36,12 @@ function loadAppData() {
 }
 
 function saveAppData(data) {
-  localStorage.setItem(ORBIT_STORAGE_KEY, JSON.stringify(data));
+  try {
+    localStorage.setItem(ORBIT_STORAGE_KEY, JSON.stringify(data));
+    return true;
+  } catch (e) {
+    console.error("Error saving to localStorage", e);
+    alert("Storage limit exceeded! Please try uploading a smaller image or deleting some posts.");
+    return false;
+  }
 }

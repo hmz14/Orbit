@@ -20,7 +20,8 @@ body {
 }
 
 .brand-logo {
-    max-width: min(360px, 90vw);
+    max-width: 360px;
+    width: 90vw;
     width: 100%;
     height: auto;
     display: block;
@@ -38,7 +39,6 @@ body {
     box-sizing: border-box;
 }
 
-/* Left: Form Section */
 .register-form-section {
     flex: 1;
     display: flex;
@@ -59,10 +59,58 @@ body {
 }
 
 .register-feedback {
-    color: #c0392b;
-    font-size: var(--text-sm);
-    margin: 0;
-    min-height: 1.2em;
+  color: #c0392b;
+  font-size: var(--text-sm);
+  margin: 0;
+  min-height: 1.2em;
+}
+
+.pw-rules {
+  list-style: none;
+  margin: -6px 0 0;
+  padding: 0.6rem 0.75rem;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.pw-rules li {
+  font-size: 0.8rem;
+  color: #9ca3af;
+  padding-left: 1.25rem;
+  position: relative;
+  transition: color 0.15s ease;
+}
+
+.pw-rules li::before {
+  content: "○";
+  position: absolute;
+  left: 0;
+  font-size: 0.7rem;
+  line-height: 1.4;
+  color: #d1d5db;
+  transition: color 0.15s ease, content 0.15s;
+}
+
+.pw-rules li[data-state="pass"] {
+  color: #16a34a;
+}
+
+.pw-rules li[data-state="pass"]::before {
+  content: "✓";
+  color: #16a34a;
+}
+
+.pw-rules li[data-state="fail"] {
+  color: #ef4444;
+}
+
+.pw-rules li[data-state="fail"]::before {
+  content: "✗";
+  color: #ef4444;
 }
 
 .register-form-section input {
@@ -112,7 +160,6 @@ body {
     text-decoration: underline;
 }
 
-/* Right: Photo Upload Section */
 .register-photo-section {
     display: flex;
     flex-direction: column;

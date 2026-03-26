@@ -66,10 +66,8 @@
         </div>
       </section>
 
-      <!-- Two-column row: create-post sidebar + posts feed -->
       <div class="profile-content-row">
 
-        <!-- Create Post — only shown on own profile -->
         <section id="profile-create-post" class="profile-create-post hidden">
           <form id="profileCreatePostForm" class="pcp-form">
             <div class="pcp-top">
@@ -80,7 +78,7 @@
               <label for="profilePostImages" class="pcp-img-label">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
                 Add Photo
-                <input type="file" id="profilePostImages" accept="image/*" multiple class="pcp-img-input">
+                <input type="file" id="profilePostImages" accept="image/*" multiple style="display: none;">
               </label>
               <div id="pcp-previews" class="pcp-previews"></div>
               <button type="submit" class="btn btn-primary pcp-submit">Post</button>
@@ -115,12 +113,11 @@
         </div>
 
         <form id="editProfileForm" class="edit-form">
-          <!-- Photo upload -->
           <div class="edit-avatar-wrap">
             <img id="edit-avatar-preview" class="edit-avatar-preview" src="../../assets/images/profile.svg" alt="Preview">
             <label for="edit-avatar-input" class="edit-avatar-label">
               Change Photo
-              <input type="file" id="edit-avatar-input" accept="image/*" class="edit-avatar-input">
+              <input type="file" id="edit-avatar-input" accept="image/*" style="display: none;">
             </label>
           </div>
 
@@ -160,7 +157,6 @@
         </form>
       </div>
     </div>
-    <!-- Followers / Following modal -->
     <div id="usersModal" class="users-modal hidden" role="dialog" aria-modal="true" aria-labelledby="usersModalTitle">
       <div class="users-modal-card">
         <div class="users-modal-header">

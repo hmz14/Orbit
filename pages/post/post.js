@@ -1,20 +1,20 @@
-// Orbit Posts (UI + logic)
-// Student-style goal: reuse the same post rendering on home + profile pages.
-// Uses only vanilla JS + localStorage (shared/storage.js already has loadAppData/saveAppData).
-
 (function () {
   function ensurePostStyles() {
     if (document.getElementById("orbit-post-styles")) return;
-    const hasPostCss = Array.from(
-      document.querySelectorAll('link[rel="stylesheet"]')
-    ).some((l) => (l.getAttribute("href") || "").includes("post.css"));
+    const links = document.querySelectorAll('link[rel="stylesheet"]');
+    let hasPostCss = false;
+    for (let i = 0; i < links.length; i++) {
+      if ((links[i].getAttribute("href") || "").includes("post.css")) {
+        hasPostCss = true;
+        break;
+      }
+    }
     if (hasPostCss) return;
 
     const link = document.createElement("link");
     link.id = "orbit-post-styles";
     link.rel = "stylesheet";
 
-    // Try to load post.css from the same folder as this post.js.
     const current = document.currentScript && document.currentScript.src;
     if (current && current.includes("post.js")) {
       link.href = current.replace("post.js", "post.css");
@@ -27,11 +27,11 @@
 
   function escapeHtml(s) {
     return String(s)
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
+      .split("&").join("&amp;")
+      .split("<").join("&lt;")
+      .split(">").join("&gt;")
+      .split('"').join("&quot;")
+      .split("'").join("&#039;");
   }
 
   function safeStr(v) {
@@ -40,7 +40,6 @@
   }
 
   function getCommentContent(comment) {
-    // your storage uses `content`, but other docs sometimes say `text`.
     return safeStr(comment.content ?? comment.text);
   }
 
@@ -80,9 +79,7 @@
   }
 
   function resolvePosts(appData, options) {
-    if (Array.isArray(options.posts)) {
-      // options.posts might be a static array from initial render.
-      // So we re-resolve by id from the current appData to avoid stale UI after delete.
+    if (options.posts && options.posts.length !== undefined) {
       const ids = options.posts
         .map((p) => (typeof p === "string" ? p : p && p.id ? p.id : null))
         .filter(Boolean);
@@ -124,12 +121,11 @@
     const author     = getUsername(usersById, post.userId);
     const handle     = toHandle(author);
     const postTime   = formatDate(getPostTimestamp(post));
-    const likeCount  = Array.isArray(post.likes) ? post.likes.length : 0;
-    const commentCount = Array.isArray(post.comments) ? post.comments.length : 0;
-    const iLiked     = currentUserId && Array.isArray(post.likes) && post.likes.includes(currentUserId);
+    const likeCount  = post.likes && post.likes.length !== undefined ? post.likes.length : 0;
+    const commentCount = post.comments && post.comments.length !== undefined ? post.comments.length : 0;
+    const iLiked     = currentUserId && post.likes && post.likes.length !== undefined && post.likes.includes(currentUserId);
     const isOwn      = currentUserId && post.userId === currentUserId;
 
-    // ── Top row: avatar + author info + time ──
     const topRow = document.createElement("div");
     topRow.className = "orbit-post-top";
 
@@ -167,7 +163,6 @@
     timeEl.className = "orbit-post-time";
     timeEl.textContent = postTime;
 
-    // Wrap avatar + author info so clicking either opens that user's profile
     const authorLink = document.createElement("div");
     authorLink.className = "orbit-post-author-link";
     authorLink.title = "View " + author + "'s profile";
@@ -183,17 +178,15 @@
     topRow.appendChild(authorLink);
     topRow.appendChild(timeEl);
 
-    // ── Content ──
     const contentEl = document.createElement("p");
     contentEl.className = "orbit-post-content";
     contentEl.textContent = safeStr(post.content);
 
-    // ── Images ──
-    const images = Array.isArray(post.images) ? post.images.filter(Boolean) : [];
+    const images = post.images && post.images.length !== undefined ? post.images.filter(Boolean) : [];
     let imagesEl = null;
     if (images.length > 0) {
       imagesEl = document.createElement("div");
-      imagesEl.className = "orbit-post-images orbit-post-images--" + Math.min(images.length, 4);
+      imagesEl.className = "orbit-post-images orbit-post-images--" + (images.length < 4 ? images.length : 4);
       images.slice(0, 4).forEach((src) => {
         const img = document.createElement("img");
         img.src = src;
@@ -204,7 +197,6 @@
       });
     }
 
-    // ── Action bar ──
     const actionBar = document.createElement("div");
     actionBar.className = "orbit-post-actions";
 
@@ -234,7 +226,6 @@
     commentBtn.addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
-      // Commenting happens via the comment form below.
     });
 
     actionBar.appendChild(likeBtn);
@@ -249,7 +240,6 @@
         e.preventDefault();
         e.stopPropagation();
 
-        // Custom delete confirmation modal
         const overlay = document.createElement("div");
         overlay.className = "orbit-delete-overlay";
 
@@ -282,14 +272,13 @@
       actionBar.appendChild(deleteBtn);
     }
 
-    // ── Comments section ──
     const commentsWrap = document.createElement("div");
     commentsWrap.className = "orbit-comments";
 
     const commentsList = document.createElement("ul");
     commentsList.className = "orbit-comments-list";
 
-    const comments = Array.isArray(post.comments) ? post.comments : [];
+    const comments = post.comments && post.comments.length !== undefined ? post.comments : [];
 
     if (comments.length === 0) {
       const emptyLi = document.createElement("li");
@@ -363,11 +352,17 @@
       li.classList.add("orbit-post-clickable");
       li.title = "View post";
       li.addEventListener("click", (e) => {
-        // Avoid navigation when interacting with card controls.
-        const interactiveEl = e.target && e.target.closest
-          ? e.target.closest("button, textarea, input, select, form, a")
-          : null;
-        if (interactiveEl) return;
+        let el = e.target;
+        let isInteractive = false;
+        const interactiveTags = ["BUTTON", "TEXTAREA", "INPUT", "SELECT", "FORM", "A"];
+        while (el && el !== li) {
+          if (interactiveTags.includes(el.tagName)) {
+            isInteractive = true;
+            break;
+          }
+          el = el.parentElement;
+        }
+        if (isInteractive) return;
 
         const url = new URL("../post/post.html", window.location.href);
         url.searchParams.set("postId", post.id);
@@ -404,7 +399,7 @@
     const post = (appData.posts || []).find((p) => p.id === postId);
     if (!post) return;
     if (!currentUserId) return;
-    if (!Array.isArray(post.likes)) post.likes = [];
+    if (!post.likes || post.likes.length === undefined) post.likes = [];
 
     const idx = post.likes.indexOf(currentUserId);
     if (idx === -1) post.likes.push(currentUserId);
@@ -422,7 +417,7 @@
     if (!userId) return;
     const post = (appData.posts || []).find((p) => p.id === postId);
     if (!post) return;
-    if (!Array.isArray(post.comments)) post.comments = [];
+    if (!post.comments || post.comments.length === undefined) post.comments = [];
 
     const commentId = "c_" + Math.random().toString(36).slice(2) + "_" + Date.now().toString(36);
     post.comments.push({
@@ -434,14 +429,11 @@
   }
 
   function renderPostsListShell(containerEl, options, state) {
-    // Profile page uses a <ul> with an id (profile-posts-list).
-    // Feed might use a <div>, so we handle both.
     if (containerEl.tagName === "UL") {
       renderPostsList({ containerEl, posts: options.posts, state, options });
       return;
     }
 
-    // Otherwise create a <ul> inside it.
     containerEl.innerHTML = "";
     const ul = document.createElement("ul");
     ul.className = "orbit-posts-list";
@@ -452,7 +444,6 @@
   function initPostsList(containerEl, options = {}) {
     ensurePostStyles();
 
-    // State we update when user clicks like/comment/delete.
     const appData = options.appData || (typeof loadAppData === "function" ? loadAppData() : null);
     if (!appData) return;
 
@@ -471,15 +462,14 @@
 
       if (typeof saveAppData === "function") saveAppData(state.appData);
 
-      // After delete, run optional callback (e.g. redirect on single-post page).
       if (type === "delete" && typeof options.onDelete === "function") {
         options.onDelete();
         return;
       }
 
-      // Re-render whole list (simple and works).
       const resolved = resolvePosts(state.appData, options);
-      renderPostsListShell(containerEl, Object.assign({}, options, { posts: resolved }), state);
+      const newOptions = { ...options, posts: resolved };
+      renderPostsListShell(containerEl, newOptions, state);
     };
 
     const resolved = resolvePosts(appData, options);
@@ -495,9 +485,9 @@
     const me = (appData.users || []).find((u) => u.id === currentUserId);
     if (!me) return [];
 
-    const followingIds = Array.isArray(me.following) ? me.following : [];
-    const allowed = new Set(followingIds.concat([currentUserId]));
-    return (appData.posts || []).filter((p) => allowed.has(p.userId));
+    const followingIds = me.following && me.following.length !== undefined ? me.following : [];
+    const allowed = followingIds.concat([currentUserId]);
+    return (appData.posts || []).filter((p) => allowed.includes(p.userId));
   }
 
   function getUserPosts(appData, userId) {
@@ -510,9 +500,15 @@
     const containerEl = document.getElementById("single-post-container");
     if (!containerEl) return;
 
-    const params = new URLSearchParams(window.location.search);
-    const postId =
-      params.get("postId") || params.get("id") || params.get("post") || params.get("pid");
+    const queryString = window.location.search.substring(1);
+    const params = queryString.split("&");
+    let postId = null;
+    for (let i = 0; i < params.length; i++) {
+      let pair = params[i].split("=");
+      if (pair[0] === "postId" || pair[0] === "id" || pair[0] === "post" || pair[0] === "pid") {
+        postId = pair[1];
+      }
+    }
     if (!postId) {
       containerEl.textContent = "Missing post id in URL.";
       return;
@@ -544,11 +540,9 @@
     initSinglePostPage,
     getFeedPosts,
     getUserPosts,
-    // also expose for later if needed
     buildUsersById,
   };
 
-  // Auto-init on the single post page.
   if (document.getElementById("single-post-container")) {
     initSinglePostPage();
   }
