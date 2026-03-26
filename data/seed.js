@@ -11,14 +11,14 @@
  */
 
 const PFP = [
-    "assets/users pfp/user-zara.jpg",
-    "assets/users pfp/user-finn.jpg",
-    "assets/users pfp/user-priya.jpg",
-    "assets/users pfp/user-dario.jpg",
-    "assets/users pfp/user-yuki.jpg",
-    "assets/users pfp/user-chen.jpg",
-    "assets/users pfp/user-amira.jpg",
-    "assets/users pfp/user-leo.jpg",
+    "assets/profile_pic/WhatsApp Image 2026-03-26 at 20.29.32.jpeg",
+    "assets/profile_pic/WhatsApp Image 2026-03-26 at 20.29.32 (1).jpeg",
+    "assets/profile_pic/WhatsApp Image 2026-03-26 at 20.29.32 (3).jpeg",
+    "assets/profile_pic/WhatsApp Image 2026-03-26 at 20.35.32.jpeg",
+    "assets/profile_pic/WhatsApp Image 2026-03-26 at 20.35.32 (1).jpeg",
+    "assets/profile_pic/WhatsApp Image 2026-03-26 at 20.35.32 (2).jpeg",
+    "assets/profile_pic/WhatsApp Image 2026-03-26 at 20.35.33.jpeg",
+    "assets/profile_pic/WhatsApp Image 2026-03-26 at 20.35.33 (1).jpeg",
 ];
 
 const POST_IMGS = [
@@ -30,6 +30,17 @@ const POST_IMGS = [
     "assets/Posts/post-celebration.jpg",
     "assets/Posts/post-outdoor.jpg",
     "assets/Posts/post-workspace.jpg",
+];
+
+const POST_PIC = [
+    "../../assets/post_pic/WhatsApp Image 2026-03-26 at 20.25.37.jpeg",
+    "../../assets/post_pic/WhatsApp Image 2026-03-26 at 20.25.37 (1).jpeg",
+    "../../assets/post_pic/WhatsApp Image 2026-03-26 at 20.25.37 (2).jpeg",
+    "../../assets/post_pic/WhatsApp Image 2026-03-26 at 20.25.37 (3).jpeg",
+    "../../assets/post_pic/WhatsApp Image 2026-03-26 at 20.25.37 (4).jpeg",
+    "../../assets/post_pic/WhatsApp Image 2026-03-26 at 20.25.37 (5).jpeg",
+    "../../assets/post_pic/WhatsApp Image 2026-03-26 at 20.25.37 (6).jpeg",
+    "../../assets/post_pic/WhatsApp Image 2026-03-26 at 20.25.38.jpeg",
 ];
 
 const SEED_USERS = [
@@ -1089,6 +1100,77 @@ const SEED_POSTS = [
         likes: ["u9", "u25", "u37"],
         comments: [
             { id: "c41", userId: "u28", content: "Continuous threat modelling is the mindset shift most teams need. Great framing.", timestamp: "2026-03-11T14:22:00Z" },
+        ],
+    },
+
+    // ── Photo posts ────────────────────────────────────────────────────────────
+    {
+        id: "p61",
+        userId: "u1",
+        content: "Took a long walk after a grueling debugging session. Sometimes stepping away from the screen is the best fix. The park was golden at dusk.",
+        images: [POST_PIC[0]],
+        timestamp: "2026-03-26T18:45:00Z",
+        likes: ["u2", "u3", "u5", "u10"],
+        comments: [
+            { id: "c42", userId: "u3", content: "This is the self-care we all need. Beautiful shot.", timestamp: "2026-03-26T19:00:00Z" },
+        ],
+    },
+    {
+        id: "p62",
+        userId: "u2",
+        content: "Weekend road trip out of the city. Dirt roads, open sky, and zero Slack notifications. Fully recommend. The sunset over the farm on the way back was unreal.",
+        images: [POST_PIC[1]],
+        timestamp: "2026-03-26T20:10:00Z",
+        likes: ["u1", "u4", "u17"],
+        comments: [
+            { id: "c43", userId: "u1", content: "This is what recharging actually looks like. Love it.", timestamp: "2026-03-26T20:28:00Z" },
+            { id: "c44", userId: "u17", content: "That sky is absolutely stunning. Where was this?", timestamp: "2026-03-26T20:45:00Z" },
+        ],
+    },
+    {
+        id: "p63",
+        userId: "u26",
+        content: "Spent the day exploring two incredible cities this trip — Chicago's skyline at sunset over the lake was something else entirely. The city never looks the same twice.",
+        images: [POST_PIC[2]],
+        timestamp: "2026-03-25T21:00:00Z",
+        likes: ["u18", "u27", "u30", "u38"],
+        comments: [
+            { id: "c45", userId: "u27", content: "Chicago from the lakefront at sunset is one of the best views in the world. Full stop.", timestamp: "2026-03-25T21:20:00Z" },
+        ],
+    },
+    {
+        id: "p64",
+        userId: "u7",
+        content: "A rainy afternoon along the Thames, Big Ben in the mist. London has a mood unlike any other city — grey skies and all. Still wouldn't trade it.",
+        images: [POST_PIC[3]],
+        timestamp: "2026-03-24T15:30:00Z",
+        likes: ["u3", "u8", "u16", "u27"],
+        comments: [
+            { id: "c46", userId: "u8", content: "London in the rain hits differently. This photo captures it perfectly.", timestamp: "2026-03-24T15:50:00Z" },
+            { id: "c47", userId: "u16", content: "The lamp posts framing Big Ben — this is a proper shot.", timestamp: "2026-03-24T16:05:00Z" },
+        ],
+    },
+    {
+        id: "p65",
+        userId: "u5",
+        content: "Beach day. Waves at sunrise, warm sand, and these two little stars just hanging out like they own the place. Nature is the best product designer.",
+        images: [POST_PIC[4], POST_PIC[5]],
+        timestamp: "2026-03-23T08:00:00Z",
+        likes: ["u1", "u6", "u15", "u21", "u22"],
+        comments: [
+            { id: "c48", userId: "u22", content: "The starfish shot is adorable. Where was this beach?", timestamp: "2026-03-23T08:20:00Z" },
+            { id: "c49", userId: "u15", content: "That sunrise over the water is peaceful. Needed this today.", timestamp: "2026-03-23T08:35:00Z" },
+        ],
+    },
+    {
+        id: "p66",
+        userId: "u18",
+        content: "Art and architecture both remind me why I build things. One image that feels infinite, one that reaches for the sky. Different mediums, same ambition.",
+        images: [POST_PIC[6], POST_PIC[7]],
+        timestamp: "2026-03-22T20:00:00Z",
+        likes: ["u19", "u26", "u35"],
+        comments: [
+            { id: "c50", userId: "u35", content: "The contrast between these two is really something. The anime one especially.", timestamp: "2026-03-22T20:18:00Z" },
         ],
     },
 ];

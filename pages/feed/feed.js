@@ -16,10 +16,12 @@
   }
 
   // DOM elements
-  const logoutBtn       = document.getElementById("logoutBtn");
-  const createPostForm  = document.getElementById("createPostForm");
-  const createPostText  = document.getElementById("createPostText");
-  const meAvatarEl      = document.getElementById("me-avatar");
+  const logoutBtn          = document.getElementById("logoutBtn");
+  const createPostForm     = document.getElementById("createPostForm");
+  const createPostText     = document.getElementById("createPostText");
+  const createPostImages   = document.getElementById("createPostImages");
+  const cpImagePreviews    = document.getElementById("cp-image-previews");
+  const meAvatarEl         = document.getElementById("me-avatar");
   const aboutAvatarEl   = document.getElementById("about-avatar");
   const aboutNameEl     = document.getElementById("about-name");
   const aboutHandleEl   = document.getElementById("about-handle");
@@ -33,12 +35,13 @@
   const peopleMoreSearchEl = document.getElementById("peopleMoreSearch");
   const peopleMoreListEl = document.getElementById("peopleMoreList");
 
-  const PLACEHOLDER_AVATAR = "../../assets/images/profile.png";
+  const PLACEHOLDER_AVATAR = "../../assets/images/profile.svg";
 
   // Get avatar src for a user, fallback to placeholder
   function getAvatarSrc(user) {
     const pic = user && user.profilePicture ? user.profilePicture : "";
     if (!pic || pic.includes("default.png")) return PLACEHOLDER_AVATAR;
+    if (pic.startsWith("data:"))   return pic;
     if (pic.startsWith("images/")) return "../../assets/" + pic;
     if (pic.startsWith("assets/")) return "../../" + pic;
     return PLACEHOLDER_AVATAR;
@@ -59,6 +62,58 @@
     }
     renderFeedPosts();
   }
+
+  // ── Image upload previews ──
+  let pendingImages = []; // array of base64 strings
+
+  function renderImagePreviews() {
+    cpImagePreviews.innerHTML = "";
+    if (pendingImages.length === 0) return;
+
+    pendingImages.forEach((src, idx) => {
+      const wrap = document.createElement("div");
+      wrap.className = "cp-preview-wrap";
+
+      const img = document.createElement("img");
+      img.src = src;
+      img.className = "cp-preview-img";
+      img.alt = "preview";
+
+      const removeBtn = document.createElement("button");
+      removeBtn.type = "button";
+      removeBtn.className = "cp-preview-remove";
+      removeBtn.innerHTML = "×";
+      removeBtn.setAttribute("aria-label", "Remove image");
+      removeBtn.addEventListener("click", () => {
+        pendingImages.splice(idx, 1);
+        renderImagePreviews();
+      });
+
+      wrap.appendChild(img);
+      wrap.appendChild(removeBtn);
+      cpImagePreviews.appendChild(wrap);
+    });
+  }
+
+  createPostImages.addEventListener("change", () => {
+    const files = Array.from(createPostImages.files);
+    const remaining = 4 - pendingImages.length;
+    const toAdd = files.slice(0, remaining);
+
+    const readers = toAdd.map((file) =>
+      new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target.result);
+        reader.readAsDataURL(file);
+      })
+    );
+
+    Promise.all(readers).then((results) => {
+      pendingImages = pendingImages.concat(results);
+      renderImagePreviews();
+      createPostImages.value = "";
+    });
+  });
 
   // Top info: avatar, about card
   function renderTopInfo() {
@@ -130,6 +185,14 @@
     textWrap.appendChild(handle);
     left.appendChild(img);
     left.appendChild(textWrap);
+
+    left.style.cursor = "pointer";
+    left.title = "View " + u.username + "'s profile";
+    left.addEventListener("click", () => {
+      const url = new URL("../profile/profile.html", window.location.href);
+      url.searchParams.set("userId", u.id);
+      window.location.href = url.toString();
+    });
 
     const btn = document.createElement("button");
     btn.type = "button";
@@ -228,6 +291,14 @@
       left.appendChild(img);
       left.appendChild(textWrap);
 
+      left.style.cursor = "pointer";
+      left.title = "View " + u.username + "'s profile";
+      left.addEventListener("click", () => {
+        const url = new URL("../profile/profile.html", window.location.href);
+        url.searchParams.set("userId", u.id);
+        window.location.href = url.toString();
+      });
+
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "follow-btn following";
@@ -312,6 +383,7 @@
       id:        "p_" + Date.now().toString(36),
       userId:    currentUser.id,
       content:   text,
+      images:    pendingImages.slice(),
       timestamp: new Date().toISOString(),
       likes:     [],
       comments:  [],
@@ -321,6 +393,8 @@
     appData.posts.push(newPost);
 
     createPostText.value = "";
+    pendingImages = [];
+    renderImagePreviews();
     saveAndRefresh();
   });
 

@@ -1,26 +1,38 @@
 // Profile page — hero layout + posts from storage (OrbitPosts)
+// Supports ?userId=<id> to view another user's profile in read-only mode.
 
-const guestEl = document.getElementById("profile-guest");
-const panelEl = document.getElementById("profile-panel");
-const editBtn = document.getElementById("editProfileBtn");
-const editTabEl = document.getElementById("editProfileTab");
-const editFormEl = document.getElementById("editProfileForm");
-const editUsernameEl = document.getElementById("edit-username");
-const editEmailEl = document.getElementById("edit-email");
-const editBioEl = document.getElementById("edit-bio");
-const cancelEditBtn1 = document.getElementById("cancelEditBtn");
-const cancelEditBtn2 = document.getElementById("cancelEditBtn2");
-const logoutBtn = document.getElementById("logoutBtn");
-const navAvatarEl = document.getElementById("nav-avatar");
-const heroAvatarEl = document.getElementById("profile-hero-avatar");
-const profileHandleEl = document.getElementById("profile-handle");
-const postsTitleEl = document.getElementById("profile-posts-title");
+const guestEl            = document.getElementById("profile-guest");
+const panelEl            = document.getElementById("profile-panel");
+const editBtn            = document.getElementById("editProfileBtn");
+const followBtn          = document.getElementById("followProfileBtn");
+const editTabEl          = document.getElementById("editProfileTab");
+const editFormEl         = document.getElementById("editProfileForm");
+const editUsernameEl     = document.getElementById("edit-username");
+const editEmailEl        = document.getElementById("edit-email");
+const editBioEl          = document.getElementById("edit-bio");
+const editAvatarInput    = document.getElementById("edit-avatar-input");
+const editAvatarPreview  = document.getElementById("edit-avatar-preview");
+const cancelEditBtn1     = document.getElementById("cancelEditBtn");
+const cancelEditBtn2     = document.getElementById("cancelEditBtn2");
+const logoutBtn          = document.getElementById("logoutBtn");
+const navAvatarEl        = document.getElementById("nav-avatar");
+const heroAvatarEl       = document.getElementById("profile-hero-avatar");
+const profileHandleEl    = document.getElementById("profile-handle");
+const postsTitleEl       = document.getElementById("profile-posts-title");
+const emailEl            = document.getElementById("profile-email");
+const createPostSectionEl = document.getElementById("profile-create-post");
+const pcpAvatarEl        = document.getElementById("pcp-avatar");
+const pcpFormEl          = document.getElementById("profileCreatePostForm");
+const pcpTextEl          = document.getElementById("profilePostText");
+const pcpImagesEl        = document.getElementById("profilePostImages");
+const pcpPreviewsEl      = document.getElementById("pcp-previews");
 
-const PLACEHOLDER_AVATAR = "../../assets/images/profile.png";
+const PLACEHOLDER_AVATAR = "../../assets/images/profile.svg";
 
 function getAvatarSrc(user) {
   const pic = user && user.profilePicture ? user.profilePicture : "";
   if (!pic || pic.includes("default.png")) return PLACEHOLDER_AVATAR;
+  if (pic.startsWith("data:"))   return pic;
   if (pic.startsWith("images/")) return "../../assets/" + pic;
   if (pic.startsWith("assets/")) return "../../" + pic;
   return PLACEHOLDER_AVATAR;
@@ -32,132 +44,301 @@ function toHandle(username) {
 
 const appData = loadAppData();
 
-if (appData.currentUserId === null || appData.currentUserId === "") {
+const urlParams  = new URLSearchParams(window.location.search);
+const viewUserId = urlParams.get("userId");
+
+if (!appData.currentUserId) {
   guestEl.classList.remove("hidden");
 } else {
-  const matches = appData.users.filter((u) => u.id === appData.currentUserId);
-  if (matches.length === 0) {
+  const me = appData.users.find((u) => u.id === appData.currentUserId);
+
+  if (!me) {
     guestEl.textContent = "Could not load your profile.";
     guestEl.classList.remove("hidden");
   } else {
-    const me = matches[0];
+    const isOwnProfile = !viewUserId || viewUserId === appData.currentUserId;
+    const targetUser   = isOwnProfile
+      ? me
+      : appData.users.find((u) => u.id === viewUserId);
 
-    function refreshHeader() {
-      const avatarSrc = getAvatarSrc(me);
-      heroAvatarEl.src = avatarSrc;
-      heroAvatarEl.onerror = function () {
-        heroAvatarEl.src = PLACEHOLDER_AVATAR;
-      };
-
+    if (!targetUser) {
+      guestEl.textContent = "User not found.";
+      guestEl.classList.remove("hidden");
+    } else {
+      // Nav avatar always shows the currently-logged-in user
       if (navAvatarEl) {
-        navAvatarEl.src = avatarSrc;
+        navAvatarEl.src    = getAvatarSrc(me);
         navAvatarEl.classList.remove("hidden");
-        navAvatarEl.onerror = function () {
-          navAvatarEl.src = PLACEHOLDER_AVATAR;
-        };
+        navAvatarEl.onerror = function () { navAvatarEl.src = PLACEHOLDER_AVATAR; };
       }
 
-      document.getElementById("profile-username").textContent = me.username;
-      profileHandleEl.textContent = toHandle(me.username);
-      document.getElementById("profile-email").textContent = me.email;
-      document.getElementById("profile-bio").textContent =
-        me.bio === "" ? "(No bio yet)" : me.bio;
+      function refreshHeader() {
+        const avatarSrc = getAvatarSrc(targetUser);
+        heroAvatarEl.src    = avatarSrc;
+        heroAvatarEl.onerror = function () { heroAvatarEl.src = PLACEHOLDER_AVATAR; };
 
-      const following = Array.isArray(me.following) ? me.following.length : 0;
-      const followers = Array.isArray(me.followers) ? me.followers.length : 0;
+        // Keep the create-post avatar in sync
+        if (pcpAvatarEl) {
+          pcpAvatarEl.src    = getAvatarSrc(me);
+          pcpAvatarEl.onerror = function () { pcpAvatarEl.src = PLACEHOLDER_AVATAR; };
+        }
 
-      document.getElementById("stat-following").textContent =
-        "Following " + following;
-      document.getElementById("stat-followers").textContent =
-        "Followers " + followers;
+        document.getElementById("profile-username").textContent = targetUser.username;
+        profileHandleEl.textContent = toHandle(targetUser.username);
 
-      postsTitleEl.textContent = me.username + "'s Posts";
-    }
+        if (emailEl) {
+          emailEl.textContent   = isOwnProfile ? targetUser.email : "";
+          emailEl.style.display = isOwnProfile ? "" : "none";
+        }
 
-    const list = document.getElementById("profile-posts-list");
+        document.getElementById("profile-bio").textContent =
+          (targetUser.bio || "").trim() ? targetUser.bio : "(No bio yet)";
 
-    function renderMyPosts() {
-      const myPosts = (appData.posts || []).filter((p) => p.userId === me.id);
-      document.getElementById("stat-posts").textContent =
-        "Posts " + myPosts.length;
+        const following = Array.isArray(targetUser.following) ? targetUser.following.length : 0;
+        const followers = Array.isArray(targetUser.followers) ? targetUser.followers.length : 0;
 
-      if (window.OrbitPosts && typeof window.OrbitPosts.initPostsList === "function") {
-        window.OrbitPosts.initPostsList(list, {
-          appData,
-          posts: myPosts,
-          showDelete: true,
-          showCommentForm: true,
-          cardIsView: true,
-        });
-        return;
+        document.getElementById("stat-following").textContent = "Following " + following;
+        document.getElementById("stat-followers").textContent = "Followers " + followers;
+
+        postsTitleEl.textContent =
+          (isOwnProfile ? "Your" : targetUser.username + "'s") + " Posts";
       }
 
-      if (myPosts.length === 0) {
-        list.innerHTML = "<li class='orbit-empty'>No posts yet.</li>";
-      } else {
-        list.innerHTML = myPosts
-          .map(
-            (p) =>
-              `<li><span class="orbit-post-time">${p.timestamp}</span> — ${p.content}</li>`
-          )
-          .join("");
+      const list = document.getElementById("profile-posts-list");
+
+      function renderPosts() {
+        const userPosts = (appData.posts || []).filter((p) => p.userId === targetUser.id);
+        document.getElementById("stat-posts").textContent = "Posts " + userPosts.length;
+
+        if (window.OrbitPosts && typeof window.OrbitPosts.initPostsList === "function") {
+          window.OrbitPosts.initPostsList(list, {
+            appData,
+            posts: userPosts,
+            showDelete: isOwnProfile,
+            showCommentForm: true,
+            cardIsView: true,
+          });
+          return;
+        }
+
+        list.innerHTML = userPosts.length === 0
+          ? "<li class='orbit-empty'>No posts yet.</li>"
+          : userPosts
+              .map((p) => `<li><span class="orbit-post-time">${p.timestamp}</span> — ${p.content}</li>`)
+              .join("");
       }
-    }
-
-    refreshHeader();
-    renderMyPosts();
-
-    panelEl.classList.remove("hidden");
-
-    if (logoutBtn) {
-      logoutBtn.addEventListener("click", () => {
-        appData.currentUserId = null;
-        saveAppData(appData);
-        window.location.href = "../login/login.html";
-      });
-    }
-
-    const closeEditTab = () => {
-      editTabEl.classList.add("hidden");
-    };
-
-    const openEditTab = () => {
-      editUsernameEl.value = me.username ?? "";
-      editEmailEl.value = me.email ?? "";
-      editBioEl.value = me.bio ?? "";
-      editTabEl.classList.remove("hidden");
-      editUsernameEl.focus();
-    };
-
-    editBtn.addEventListener("click", openEditTab);
-    cancelEditBtn1.addEventListener("click", closeEditTab);
-    cancelEditBtn2.addEventListener("click", closeEditTab);
-
-    editFormEl.addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      const newUsername = (editUsernameEl.value || "").trim();
-      const newBio = (editBioEl.value || "").trim();
-
-      if (newUsername.length === 0) {
-        editUsernameEl.focus();
-        return;
-      }
-
-      const userIndex = appData.users.findIndex((u) => u.id === me.id);
-      if (userIndex === -1) return;
-
-      appData.users[userIndex].username = newUsername;
-      appData.users[userIndex].bio = newBio;
-
-      saveAppData(appData);
-
-      me.username = newUsername;
-      me.bio = newBio;
 
       refreshHeader();
-      closeEditTab();
-      renderMyPosts();
-    });
+      renderPosts();
+      panelEl.classList.remove("hidden");
+
+      // ── Own profile ──────────────────────────────────────────────────────────
+      if (isOwnProfile) {
+        if (editBtn)   editBtn.classList.remove("hidden");
+        if (followBtn) followBtn.classList.add("hidden");
+
+        // Show create-post card
+        if (createPostSectionEl) createPostSectionEl.classList.remove("hidden");
+
+        // ── Edit Profile ──
+        let pendingAvatarBase64 = null; // base64 of newly chosen photo, or null
+
+        const closeEditTab = () => {
+          editTabEl.classList.add("hidden");
+          pendingAvatarBase64 = null;
+        };
+
+        const openEditTab = () => {
+          editUsernameEl.value = me.username ?? "";
+          editEmailEl.value    = me.email    ?? "";
+          editBioEl.value      = me.bio      ?? "";
+          // Prefill preview with current avatar
+          if (editAvatarPreview) {
+            editAvatarPreview.src    = getAvatarSrc(me);
+            editAvatarPreview.onerror = function () { editAvatarPreview.src = PLACEHOLDER_AVATAR; };
+          }
+          pendingAvatarBase64 = null;
+          editTabEl.classList.remove("hidden");
+          editUsernameEl.focus();
+        };
+
+        editBtn.addEventListener("click", openEditTab);
+        cancelEditBtn1.addEventListener("click", closeEditTab);
+        cancelEditBtn2.addEventListener("click", closeEditTab);
+
+        // Live preview when user picks a new photo
+        if (editAvatarInput) {
+          editAvatarInput.addEventListener("change", () => {
+            const file = editAvatarInput.files && editAvatarInput.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              pendingAvatarBase64 = e.target.result;
+              if (editAvatarPreview) editAvatarPreview.src = pendingAvatarBase64;
+            };
+            reader.readAsDataURL(file);
+          });
+        }
+
+        editFormEl.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const newUsername = (editUsernameEl.value || "").trim();
+          const newBio      = (editBioEl.value      || "").trim();
+          if (!newUsername) { editUsernameEl.focus(); return; }
+
+          const idx = appData.users.findIndex((u) => u.id === me.id);
+          if (idx === -1) return;
+
+          appData.users[idx].username = newUsername;
+          appData.users[idx].bio      = newBio;
+          if (pendingAvatarBase64) {
+            appData.users[idx].profilePicture = pendingAvatarBase64;
+          }
+          saveAppData(appData);
+
+          me.username = newUsername;
+          me.bio      = newBio;
+          if (pendingAvatarBase64) me.profilePicture = pendingAvatarBase64;
+
+          // Also update nav avatar immediately
+          if (navAvatarEl) navAvatarEl.src = getAvatarSrc(me);
+
+          refreshHeader();
+          closeEditTab();
+          renderPosts();
+        });
+
+        // ── Create Post ──
+        let pendingPostImages = [];
+
+        function renderPostImagePreviews() {
+          if (!pcpPreviewsEl) return;
+          pcpPreviewsEl.innerHTML = "";
+          pendingPostImages.forEach((src, idx) => {
+            const wrap = document.createElement("div");
+            wrap.className = "pcp-preview-wrap";
+
+            const img = document.createElement("img");
+            img.src = src;
+            img.className = "pcp-preview-img";
+            img.alt = "preview";
+
+            const removeBtn = document.createElement("button");
+            removeBtn.type = "button";
+            removeBtn.className = "pcp-preview-remove";
+            removeBtn.textContent = "×";
+            removeBtn.addEventListener("click", () => {
+              pendingPostImages.splice(idx, 1);
+              renderPostImagePreviews();
+            });
+
+            wrap.appendChild(img);
+            wrap.appendChild(removeBtn);
+            pcpPreviewsEl.appendChild(wrap);
+          });
+        }
+
+        if (pcpImagesEl) {
+          pcpImagesEl.addEventListener("change", () => {
+            const files     = Array.from(pcpImagesEl.files);
+            const remaining = 4 - pendingPostImages.length;
+            const toAdd     = files.slice(0, remaining);
+
+            const readers = toAdd.map(
+              (file) =>
+                new Promise((resolve) => {
+                  const reader = new FileReader();
+                  reader.onload = (ev) => resolve(ev.target.result);
+                  reader.readAsDataURL(file);
+                })
+            );
+
+            Promise.all(readers).then((results) => {
+              pendingPostImages = pendingPostImages.concat(results);
+              renderPostImagePreviews();
+              pcpImagesEl.value = "";
+            });
+          });
+        }
+
+        if (pcpFormEl) {
+          pcpFormEl.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const text = (pcpTextEl ? pcpTextEl.value : "").trim();
+            if (!text && pendingPostImages.length === 0) return;
+
+            const newPost = {
+              id:        "p_" + Date.now().toString(36),
+              userId:    me.id,
+              content:   text,
+              images:    pendingPostImages.slice(),
+              timestamp: new Date().toISOString(),
+              likes:     [],
+              comments:  [],
+            };
+
+            if (!Array.isArray(appData.posts)) appData.posts = [];
+            appData.posts.push(newPost);
+            saveAppData(appData);
+
+            if (pcpTextEl) pcpTextEl.value = "";
+            pendingPostImages = [];
+            renderPostImagePreviews();
+            renderPosts();
+          });
+        }
+
+      } else {
+        // ── Viewing another user's profile ────────────────────────────────────
+        if (editBtn)              editBtn.classList.add("hidden");
+        if (editTabEl)            editTabEl.classList.add("hidden");
+        if (createPostSectionEl)  createPostSectionEl.classList.add("hidden");
+
+        if (followBtn) {
+          followBtn.classList.remove("hidden");
+
+          function updateFollowBtn() {
+            const iFollow = Array.isArray(me.following) && me.following.includes(targetUser.id);
+            followBtn.textContent = iFollow ? "Unfollow" : "Follow";
+            followBtn.className   =
+              "btn " + (iFollow ? "btn-secondary" : "btn-primary") + " profile-follow-btn";
+          }
+
+          updateFollowBtn();
+
+          followBtn.addEventListener("click", () => {
+            if (!Array.isArray(me.following))         me.following = [];
+            if (!Array.isArray(targetUser.followers)) targetUser.followers = [];
+
+            const iFollow = me.following.includes(targetUser.id);
+            if (iFollow) {
+              me.following         = me.following.filter((id) => id !== targetUser.id);
+              targetUser.followers = targetUser.followers.filter((id) => id !== me.id);
+            } else {
+              me.following.push(targetUser.id);
+              targetUser.followers.push(me.id);
+            }
+
+            const meIdx     = appData.users.findIndex((u) => u.id === me.id);
+            const targetIdx = appData.users.findIndex((u) => u.id === targetUser.id);
+            if (meIdx     !== -1) appData.users[meIdx]     = me;
+            if (targetIdx !== -1) appData.users[targetIdx] = targetUser;
+
+            saveAppData(appData);
+            updateFollowBtn();
+            refreshHeader();
+          });
+        }
+      }
+
+      // Logout always available
+      if (logoutBtn) {
+        logoutBtn.addEventListener("click", () => {
+          appData.currentUserId = null;
+          saveAppData(appData);
+          window.location.href = "../login/login.html";
+        });
+      }
+    }
   }
 }

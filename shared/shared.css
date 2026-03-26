@@ -46,3 +46,42 @@
     --text-xl: 24px;
  
  }
+
+/* ── Site-wide footer ── */
+.site-footer {
+  background: #000;
+  margin-top: 3rem;
+  padding: 1rem 1.5rem;
+  font-family: "Inter", sans-serif;
+  text-align: center;
+}
+
+.site-footer-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.site-footer-nav {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.site-footer-link {
+  color: #d1d5db;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: color 0.15s ease;
+}
+
+.site-footer-link:hover {
+  color: #fff;
+}
+
+.site-footer-copy {
+  font-size: 0.8rem;
+  color: #6b7280;
+}

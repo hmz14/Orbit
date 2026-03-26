@@ -1,5 +1,3 @@
-// Login page — Lab 5 form + Lab 6 localStorage (storage.js)
-
 const loginForm = document.getElementById("login-form");
 const feedbackEl = document.getElementById("login-feedback");
 
@@ -10,19 +8,29 @@ function showMessage(msg) {
 loginForm.addEventListener("submit", (event) => {
   event.preventDefault();
 
-  const username = document.getElementById("login-username").value.trim();
+  const email = document.getElementById("login-email").value.trim().toLowerCase();
   const password = document.getElementById("login-password").value;
 
   showMessage("");
 
+  if (!email) {
+    showMessage("Please enter your email.");
+    return;
+  }
+
+  if (!password) {
+    showMessage("Please enter your password.");
+    return;
+  }
+
   const appData = loadAppData();
 
   const found = appData.users.filter(
-    (u) => u.username.toLowerCase() === username.toLowerCase()
+    (u) => u.email && u.email.toLowerCase() === email
   );
 
   if (found.length === 0) {
-    showMessage("Username not found.");
+    showMessage("No account found with that email.");
     return;
   }
 

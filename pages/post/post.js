@@ -64,7 +64,7 @@
     return "@" + (username || "").replace(/\s+/g, "").toLowerCase();
   }
 
-  const PLACEHOLDER = "../../assets/images/profile.png";
+  const PLACEHOLDER = "../../assets/images/profile.svg";
 
   function buildUsersById(users) {
     const map = {};
@@ -139,7 +139,11 @@
     const postUser = usersById[post.userId];
     const pic = postUser && postUser.profilePicture ? postUser.profilePicture : "";
     if (pic && !pic.includes("default.png")) {
-      avatarImg.src = pic.startsWith("assets/") ? "../../" + pic : "../../assets/" + pic;
+      if (pic.startsWith("data:")) {
+        avatarImg.src = pic;
+      } else {
+        avatarImg.src = pic.startsWith("assets/") ? "../../" + pic : "../../assets/" + pic;
+      }
     } else {
       avatarImg.src = PLACEHOLDER;
     }
@@ -163,14 +167,42 @@
     timeEl.className = "orbit-post-time";
     timeEl.textContent = postTime;
 
-    topRow.appendChild(avatarImg);
-    topRow.appendChild(authorInfo);
+    // Wrap avatar + author info so clicking either opens that user's profile
+    const authorLink = document.createElement("div");
+    authorLink.className = "orbit-post-author-link";
+    authorLink.title = "View " + author + "'s profile";
+    authorLink.appendChild(avatarImg);
+    authorLink.appendChild(authorInfo);
+    authorLink.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const url = new URL("../profile/profile.html", window.location.href);
+      url.searchParams.set("userId", post.userId);
+      window.location.href = url.toString();
+    });
+
+    topRow.appendChild(authorLink);
     topRow.appendChild(timeEl);
 
     // ── Content ──
     const contentEl = document.createElement("p");
     contentEl.className = "orbit-post-content";
     contentEl.textContent = safeStr(post.content);
+
+    // ── Images ──
+    const images = Array.isArray(post.images) ? post.images.filter(Boolean) : [];
+    let imagesEl = null;
+    if (images.length > 0) {
+      imagesEl = document.createElement("div");
+      imagesEl.className = "orbit-post-images orbit-post-images--" + Math.min(images.length, 4);
+      images.slice(0, 4).forEach((src) => {
+        const img = document.createElement("img");
+        img.src = src;
+        img.className = "orbit-post-image";
+        img.alt = "post image";
+        img.loading = "lazy";
+        imagesEl.appendChild(img);
+      });
+    }
 
     // ── Action bar ──
     const actionBar = document.createElement("div");
@@ -293,8 +325,11 @@
 
     li.appendChild(topRow);
     li.appendChild(contentEl);
+    if (imagesEl) li.appendChild(imagesEl);
     li.appendChild(actionBar);
-    li.appendChild(commentsWrap);
+    if (!options.cardIsView) {
+      li.appendChild(commentsWrap);
+    }
 
     if (options.cardIsView === true) {
       li.classList.add("orbit-post-clickable");

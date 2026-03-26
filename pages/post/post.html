@@ -3,14 +3,89 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Post</title>
+  <title>Post – Orbit</title>
+  <link rel="stylesheet" href="../../shared/shared.css">
   <link rel="stylesheet" href="post.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
-<body>
-  <main class="orbit-post-page">
-    <h1>Post</h1>
-    <div id="single-post-container"></div>
+<body class="post-page-body">
+
+  <header class="top-nav">
+    <div class="post-nav-left">
+      <img class="brand-logo" src="../../assets/icons/orbit_logo.png" alt="Orbit">
+      <button class="post-back-btn" id="backBtn" type="button" aria-label="Go back">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+        Back
+      </button>
+    </div>
+    <nav class="top-links" aria-label="Primary navigation">
+      <a class="top-link" href="../feed/feed.html">Feed</a>
+      <a class="top-link" href="../profile/profile.html">Profile</a>
+      <img id="nav-avatar" class="nav-avatar hidden" src="../../assets/images/profile.svg" alt="">
+      <button id="logoutBtn" type="button" class="top-link top-link-logout">Logout</button>
+    </nav>
+  </header>
+
+  <main class="post-page-main">
+    <div class="post-page-container">
+      <p class="post-page-label">Post</p>
+      <div id="single-post-container"></div>
+    </div>
   </main>
+
+  <script>
+    document.getElementById("backBtn").addEventListener("click", () => {
+      if (history.length > 1) history.back();
+      else window.location.href = "../feed/feed.html";
+    });
+  </script>
+  <script>
+    (function () {
+      const PLACEHOLDER = "../../assets/images/profile.svg";
+      const data = typeof loadAppData === "function" ? loadAppData() : null;
+      if (data && data.currentUserId) {
+        const me = (data.users || []).find((u) => u.id === data.currentUserId);
+        if (me) {
+          const navAvatar = document.getElementById("nav-avatar");
+          if (navAvatar) {
+            const pic = me.profilePicture || "";
+            if (pic && !pic.includes("default.png")) {
+              navAvatar.src = pic.startsWith("data:") ? pic
+                : pic.startsWith("assets/") ? "../../" + pic
+                : "../../assets/" + pic;
+            }
+            navAvatar.onerror = function () { navAvatar.src = PLACEHOLDER; };
+            navAvatar.classList.remove("hidden");
+          }
+        }
+      }
+      const logoutBtn = document.getElementById("logoutBtn");
+      if (logoutBtn) {
+        logoutBtn.addEventListener("click", () => {
+          if (typeof loadAppData === "function" && typeof saveAppData === "function") {
+            const d = loadAppData();
+            d.currentUserId = null;
+            saveAppData(d);
+          }
+          window.location.href = "../login/login.html";
+        });
+      }
+    })();
+  </script>
+
+  <footer class="site-footer">
+    <div class="site-footer-inner">
+      <nav class="site-footer-nav">
+        <a class="site-footer-link" href="../feed/feed.html">Home</a>
+        <a class="site-footer-link" href="../profile/profile.html">Profile</a>
+      </nav>
+      <span class="site-footer-copy">© 2026 Orbit. All rights reserved.</span>
+    </div>
+  </footer>
 
   <script src="../../data/seed.js"></script>
   <script src="../../shared/storage.js"></script>

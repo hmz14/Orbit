@@ -13,7 +13,30 @@ function loadAppData() {
     saveAppData(fresh);
     return fresh;
   }
-  return JSON.parse(saved);
+  const data = JSON.parse(saved);
+  let dirty = false;
+
+  // Sync profile pictures from seed (so updated PFP paths take effect).
+  const seedUsersById = {};
+  (SEED_USERS || []).forEach((u) => { seedUsersById[u.id] = u; });
+  (data.users || []).forEach((u) => {
+    const seed = seedUsersById[u.id];
+    if (seed && seed.profilePicture && u.profilePicture !== seed.profilePicture) {
+      u.profilePicture = seed.profilePicture;
+      dirty = true;
+    }
+  });
+
+  // Merge any new seed posts that don't exist yet in stored data.
+  const existingIds = new Set((data.posts || []).map((p) => p.id));
+  const newPosts = (SEED_POSTS || []).filter((p) => !existingIds.has(p.id));
+  if (newPosts.length > 0) {
+    data.posts = (data.posts || []).concat(newPosts);
+    dirty = true;
+  }
+
+  if (dirty) saveAppData(data);
+  return data;
 }
 
 function saveAppData(data) {
