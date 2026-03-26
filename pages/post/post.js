@@ -187,6 +187,7 @@
 
     likeBtn.addEventListener("click", (e) => {
       e.preventDefault();
+      e.stopPropagation();
       if (!currentUserId) return;
       onAction("like", post.id);
     });
@@ -198,6 +199,12 @@
       `<span class="orbit-action-icon">💬</span>` +
       `<span class="orbit-action-count">${commentCount}</span>`;
 
+    commentBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      // Commenting happens via the comment form below.
+    });
+
     actionBar.appendChild(likeBtn);
     actionBar.appendChild(commentBtn);
 
@@ -208,6 +215,7 @@
       deleteBtn.textContent = "Delete";
       deleteBtn.addEventListener("click", (e) => {
         e.preventDefault();
+        e.stopPropagation();
         if (!confirm("Delete this post?")) return;
         onAction("delete", post.id);
       });
@@ -272,6 +280,7 @@
 
       form.addEventListener("submit", (e) => {
         e.preventDefault();
+        e.stopPropagation();
         if (!currentUserId) return;
         const text = (textarea.value || "").trim();
         if (!text || text.length > 500) return;
@@ -286,6 +295,23 @@
     li.appendChild(contentEl);
     li.appendChild(actionBar);
     li.appendChild(commentsWrap);
+
+    if (options.cardIsView === true) {
+      li.classList.add("orbit-post-clickable");
+      li.title = "View post";
+      li.addEventListener("click", (e) => {
+        // Avoid navigation when interacting with card controls.
+        const interactiveEl = e.target && e.target.closest
+          ? e.target.closest("button, textarea, input, select, form, a")
+          : null;
+        if (interactiveEl) return;
+
+        const url = new URL("../post/post.html", window.location.href);
+        url.searchParams.set("postId", post.id);
+        window.location.href = url.toString();
+      });
+    }
+
     return li;
   }
 

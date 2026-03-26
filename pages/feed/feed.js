@@ -237,6 +237,7 @@
         posts,
         showDelete: true,
         showCommentForm: true,
+        cardIsView: true,
       });
     } else {
       feedPostsListEl.innerHTML = "<li>Could not load posts.</li>";

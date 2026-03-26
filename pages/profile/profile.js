@@ -87,6 +87,7 @@ if (appData.currentUserId === null || appData.currentUserId === "") {
           posts: myPosts,
           showDelete: true,
           showCommentForm: true,
+          cardIsView: true,
         });
         return;
       }
