@@ -25,6 +25,7 @@
   const aboutHandleEl   = document.getElementById("about-handle");
   const aboutBioEl      = document.getElementById("about-bio");
   const peopleListEl    = document.getElementById("peopleList");
+  const followingListEl = document.getElementById("followingList");
   const feedPostsListEl = document.getElementById("feed-posts-list");
 
   const PLACEHOLDER_AVATAR = "../../assets/images/profile.png";
@@ -47,6 +48,7 @@
     saveAppData(appData);
     renderTopInfo();
     renderPeopleYouMayKnow();
+    renderFollowing();
     renderFeedPosts();
   }
 
@@ -125,6 +127,68 @@
       li.appendChild(left);
       li.appendChild(btn);
       peopleListEl.appendChild(li);
+    });
+  }
+
+  // Following — users you already follow (unfollow lives here)
+  function renderFollowing() {
+    const following = getFollowingSet();
+    const followedUsers = (appData.users || []).filter(
+      (u) => u.id !== currentUser.id && following.has(u.id)
+    );
+
+    followingListEl.innerHTML = "";
+
+    if (followedUsers.length === 0) {
+      const li = document.createElement("li");
+      li.className = "orbit-empty";
+      li.textContent = "You are not following anyone yet.";
+      followingListEl.appendChild(li);
+      return;
+    }
+
+    // Keep it compact; you can show more later if needed.
+    followedUsers.slice(0, 3).forEach((u) => {
+      const li = document.createElement("li");
+      li.className = "people-item";
+      li.dataset.userId = u.id;
+
+      const left = document.createElement("div");
+      left.className = "people-item-left";
+
+      const img = document.createElement("img");
+      img.className = "people-avatar";
+      img.src = getAvatarSrc(u);
+      img.alt = u.username;
+      img.onerror = () => { img.src = PLACEHOLDER_AVATAR; };
+
+      const textWrap = document.createElement("div");
+
+      const name = document.createElement("p");
+      name.className = "people-item-name";
+      name.textContent = u.username;
+
+      const handle = document.createElement("p");
+      handle.className = "people-item-handle";
+      handle.textContent = toHandle(u.username);
+
+      textWrap.appendChild(name);
+      textWrap.appendChild(handle);
+      left.appendChild(img);
+      left.appendChild(textWrap);
+
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "follow-btn following";
+      btn.textContent = "Unfollow";
+
+      btn.addEventListener("click", () => {
+        toggleFollow(u.id);
+      });
+
+      li.appendChild(left);
+      li.appendChild(btn);
+      followingListEl.appendChild(li);
     });
   }
 
@@ -211,5 +275,6 @@
   // First render
   renderTopInfo();
   renderPeopleYouMayKnow();
+  renderFollowing();
   renderFeedPosts();
 })();
