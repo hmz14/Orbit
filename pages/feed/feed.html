@@ -57,7 +57,16 @@
       <!-- Right sidebar: People + About -->
       <div class="col-sidebar">
         <div class="card people-card">
-          <h3 class="sidebar-title">People You May Know</h3>
+          <div class="sidebar-title-row">
+            <h3 class="sidebar-title">People You May Know</h3>
+            <button
+              id="peopleViewMoreBtn"
+              type="button"
+              class="btn btn-secondary view-more-btn"
+            >
+              View more
+            </button>
+          </div>
           <ul id="peopleList" class="people-list"></ul>
 
           <h3 class="sidebar-title">Following</h3>
@@ -87,6 +96,38 @@
   </main>
 
   <script src="../../data/seed.js"></script>
+  <div
+    id="peopleMoreTab"
+    class="people-more-tab hidden"
+    role="dialog"
+    aria-modal="false"
+    aria-labelledby="peopleMoreTitle"
+  >
+    <div class="people-more-header">
+      <h3 id="peopleMoreTitle" class="people-more-title">People You May Know</h3>
+      <button
+        id="peopleMoreCloseBtn"
+        type="button"
+        class="icon-btn"
+        aria-label="Close"
+      >
+        ×
+      </button>
+    </div>
+
+    <div class="people-more-search-wrap">
+      <input
+        id="peopleMoreSearch"
+        class="people-search"
+        type="search"
+        placeholder="Search users..."
+        autocomplete="off"
+      />
+    </div>
+
+    <ul id="peopleMoreList" class="people-more-list people-list"></ul>
+  </div>
+
   <script src="../../shared/storage.js"></script>
   <script src="../post/post.js"></script>
   <script src="feed.js"></script>

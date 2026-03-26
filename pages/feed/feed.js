@@ -27,6 +27,11 @@
   const peopleListEl    = document.getElementById("peopleList");
   const followingListEl = document.getElementById("followingList");
   const feedPostsListEl = document.getElementById("feed-posts-list");
+  const peopleViewMoreBtn = document.getElementById("peopleViewMoreBtn");
+  const peopleMoreTabEl = document.getElementById("peopleMoreTab");
+  const peopleMoreCloseBtn = document.getElementById("peopleMoreCloseBtn");
+  const peopleMoreSearchEl = document.getElementById("peopleMoreSearch");
+  const peopleMoreListEl = document.getElementById("peopleMoreList");
 
   const PLACEHOLDER_AVATAR = "../../assets/images/profile.png";
 
@@ -49,6 +54,9 @@
     renderTopInfo();
     renderPeopleYouMayKnow();
     renderFollowing();
+    if (peopleMoreTabEl && !peopleMoreTabEl.classList.contains("hidden")) {
+      renderPeopleMoreList();
+    }
     renderFeedPosts();
   }
 
@@ -86,47 +94,90 @@
       return;
     }
 
-    others.slice(0, 3).forEach((u) => {
+    // Show enough items so the sidebar can scroll without clicking "View more".
+    others.slice(0, 8).forEach((u) => {
+      peopleListEl.appendChild(createPeopleItem(u));
+    });
+  }
+
+  function createPeopleItem(u) {
+    const li = document.createElement("li");
+    li.className = "people-item";
+    li.dataset.userId = u.id;
+
+    const left = document.createElement("div");
+    left.className = "people-item-left";
+
+    const img = document.createElement("img");
+    img.className = "people-avatar";
+    img.src = getAvatarSrc(u);
+    img.alt = u.username;
+    img.onerror = () => {
+      img.src = PLACEHOLDER_AVATAR;
+    };
+
+    const textWrap = document.createElement("div");
+
+    const name = document.createElement("p");
+    name.className = "people-item-name";
+    name.textContent = u.username;
+
+    const handle = document.createElement("p");
+    handle.className = "people-item-handle";
+    handle.textContent = toHandle(u.username);
+
+    textWrap.appendChild(name);
+    textWrap.appendChild(handle);
+    left.appendChild(img);
+    left.appendChild(textWrap);
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "follow-btn";
+    btn.textContent = "Follow";
+
+    btn.addEventListener("click", () => {
+      toggleFollow(u.id);
+    });
+
+    li.appendChild(left);
+    li.appendChild(btn);
+    return li;
+  }
+
+  function renderPeopleMoreList() {
+    const following = getFollowingSet();
+    const others = (appData.users || []).filter(
+      (u) => u.id !== currentUser.id && !following.has(u.id)
+    );
+
+    const q = (peopleMoreSearchEl && peopleMoreSearchEl.value
+      ? peopleMoreSearchEl.value
+      : ""
+    )
+      .trim()
+      .toLowerCase();
+
+    const filtered = q
+      ? others.filter((u) => {
+          const username = (u.username || "").toLowerCase();
+          const handle = toHandle(u.username).toLowerCase();
+          return username.includes(q) || handle.includes(q);
+        })
+      : others;
+
+    peopleMoreListEl.innerHTML = "";
+
+    if (filtered.length === 0) {
       const li = document.createElement("li");
-      li.className = "people-item";
-      li.dataset.userId = u.id;
+      li.className = "orbit-empty";
+      li.textContent = q ? "No matching users." : "No users to show.";
+      peopleMoreListEl.appendChild(li);
+      return;
+    }
 
-      const left = document.createElement("div");
-      left.className = "people-item-left";
-
-      const img = document.createElement("img");
-      img.className = "people-avatar";
-      img.src = getAvatarSrc(u);
-      img.alt = u.username;
-      img.onerror = () => { img.src = PLACEHOLDER_AVATAR; };
-
-      const textWrap = document.createElement("div");
-
-      const name = document.createElement("p");
-      name.className = "people-item-name";
-      name.textContent = u.username;
-
-      const handle = document.createElement("p");
-      handle.className = "people-item-handle";
-      handle.textContent = toHandle(u.username);
-
-      textWrap.appendChild(name);
-      textWrap.appendChild(handle);
-      left.appendChild(img);
-      left.appendChild(textWrap);
-
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "follow-btn";
-      btn.textContent = "Follow";
-
-      btn.addEventListener("click", () => {
-        toggleFollow(u.id);
-      });
-
-      li.appendChild(left);
-      li.appendChild(btn);
-      peopleListEl.appendChild(li);
+    filtered.forEach((u) => {
+      peopleMoreListEl.appendChild(createPeopleItem(u));
     });
   }
 
@@ -278,4 +329,35 @@
   renderPeopleYouMayKnow();
   renderFollowing();
   renderFeedPosts();
+
+  // People "View more" overlay
+  if (peopleViewMoreBtn && peopleMoreTabEl) {
+    const openTab = () => {
+      peopleMoreTabEl.classList.remove("hidden");
+      if (peopleMoreSearchEl) {
+        peopleMoreSearchEl.value = "";
+      }
+      renderPeopleMoreList();
+      if (peopleMoreSearchEl) peopleMoreSearchEl.focus();
+    };
+
+    const closeTab = () => {
+      peopleMoreTabEl.classList.add("hidden");
+    };
+
+    peopleViewMoreBtn.addEventListener("click", openTab);
+    if (peopleMoreCloseBtn) peopleMoreCloseBtn.addEventListener("click", closeTab);
+
+    if (peopleMoreSearchEl) {
+      peopleMoreSearchEl.addEventListener("input", () => {
+        renderPeopleMoreList();
+      });
+    }
+
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && peopleMoreTabEl && !peopleMoreTabEl.classList.contains("hidden")) {
+        closeTab();
+      }
+    });
+  }
 })();
