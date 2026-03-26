@@ -7,6 +7,10 @@ body {
   background-color: var(--color-bg, #f5f7fb);
 }
 
+.hidden {
+  display: none;
+}
+
 /* ── Navbar ── */
 .top-nav {
   display: flex;
@@ -71,7 +75,9 @@ body {
 /* ── Page layout ── */
 .feed-page {
   max-width: 1050px;
-  margin: 0 auto;
+  /* Flush-right layout:
+     keep whitespace on the left, but let the right sidebar land at the page end. */
+  margin: 0  auto;
   padding: 1.25rem 1rem 2rem;
   box-sizing: border-box;
 }
@@ -209,6 +215,10 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
+  /* Make sidebar suggestions scrollable by default. */
+  max-height: 240px;
+  overflow-y: auto;
+  padding-right: 6px;
 }
 
 .people-item {
@@ -327,6 +337,78 @@ body {
   list-style: none;
 }
 
+/* People sidebar header row (title + view more) */
+.sidebar-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.view-more-btn {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.82rem;
+  font-weight: 800;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+/* View more overlay (search + full list) */
+.people-more-tab {
+  position: fixed;
+  top: 5rem;
+  right: 1rem;
+  width: min(460px, calc(100vw - 2rem));
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+  padding: 1rem;
+  z-index: 250;
+}
+
+.people-more-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.people-more-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #111827;
+}
+
+.people-more-search-wrap {
+  margin-bottom: 0.85rem;
+}
+
+.people-search {
+  width: 100%;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.95rem;
+  outline: none;
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
+}
+
+.people-search:focus {
+  border-color: #4f46e5;
+}
+
+.people-more-list {
+  /* Scroll inside overlay */
+  max-height: 360px;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
 /* ── Responsive ── */
 @media (max-width: 800px) {
   .feed-grid {
@@ -335,5 +417,17 @@ body {
 
   .col-sidebar {
     order: -1;
+  }
+
+  .feed-page {
+    /* Center again on small screens to avoid awkward whitespace. */
+    margin: 0 auto;
+  }
+
+  .people-more-tab {
+    top: 4.5rem;
+    right: 0.75rem;
+    left: 0.75rem;
+    width: auto;
   }
 }
