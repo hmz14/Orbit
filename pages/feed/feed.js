@@ -6,23 +6,25 @@
     return;
   }
 
-  const currentUser = (appData.users || []).find((u) => u.id === appData.currentUserId);
+  const currentUser = (appData.users || []).find(
+    (u) => u.id === appData.currentUserId,
+  );
   if (!currentUser) {
     window.location.href = "../login/login.html";
     return;
   }
 
-  const logoutBtn          = document.getElementById("logoutBtn");
-  const createPostForm     = document.getElementById("createPostForm");
-  const createPostText     = document.getElementById("createPostText");
-  const createPostImages   = document.getElementById("createPostImages");
-  const cpImagePreviews    = document.getElementById("cp-image-previews");
-  const meAvatarEl         = document.getElementById("me-avatar");
-  const aboutAvatarEl   = document.getElementById("about-avatar");
-  const aboutNameEl     = document.getElementById("about-name");
-  const aboutHandleEl   = document.getElementById("about-handle");
-  const aboutBioEl      = document.getElementById("about-bio");
-  const peopleListEl    = document.getElementById("peopleList");
+  const logoutBtn = document.getElementById("logoutBtn");
+  const createPostForm = document.getElementById("createPostForm");
+  const createPostText = document.getElementById("createPostText");
+  const createPostImages = document.getElementById("createPostImages");
+  const cpImagePreviews = document.getElementById("cp-image-previews");
+  const meAvatarEl = document.getElementById("me-avatar");
+  const aboutAvatarEl = document.getElementById("about-avatar");
+  const aboutNameEl = document.getElementById("about-name");
+  const aboutHandleEl = document.getElementById("about-handle");
+  const aboutBioEl = document.getElementById("about-bio");
+  const peopleListEl = document.getElementById("peopleList");
   const followingListEl = document.getElementById("followingList");
   const feedPostsListEl = document.getElementById("feed-posts-list");
   const peopleViewMoreBtn = document.getElementById("peopleViewMoreBtn");
@@ -36,7 +38,7 @@
   function getAvatarSrc(user) {
     const pic = user && user.profilePicture ? user.profilePicture : "";
     if (!pic || pic.includes("default.png")) return PLACEHOLDER_AVATAR;
-    if (pic.startsWith("data:"))   return pic;
+    if (pic.startsWith("data:")) return pic;
     if (pic.startsWith("images/")) return "../../assets/" + pic;
     if (pic.startsWith("assets/")) return "../../" + pic;
     return PLACEHOLDER_AVATAR;
@@ -135,17 +137,21 @@
     aboutNameEl.textContent = currentUser.username;
     aboutHandleEl.textContent = toHandle(currentUser.username);
     aboutBioEl.textContent =
-      currentUser.bio && currentUser.bio.trim() ? currentUser.bio : "No bio yet.";
+      currentUser.bio && currentUser.bio.trim()
+        ? currentUser.bio
+        : "No bio yet.";
   }
 
   function getFollowingArray() {
-    return currentUser.following && currentUser.following.length !== undefined ? currentUser.following : [];
+    return currentUser.following && currentUser.following.length !== undefined
+      ? currentUser.following
+      : [];
   }
 
   function renderPeopleYouMayKnow() {
     const following = getFollowingArray();
     const others = (appData.users || []).filter(
-      (u) => u.id !== currentUser.id && !following.includes(u.id)
+      (u) => u.id !== currentUser.id && !following.includes(u.id),
     );
 
     peopleListEl.innerHTML = "";
@@ -219,12 +225,13 @@
   function renderPeopleMoreList() {
     const following = getFollowingArray();
     const others = (appData.users || []).filter(
-      (u) => u.id !== currentUser.id && !following.includes(u.id)
+      (u) => u.id !== currentUser.id && !following.includes(u.id),
     );
 
-    const q = (peopleMoreSearchEl && peopleMoreSearchEl.value
-      ? peopleMoreSearchEl.value
-      : ""
+    const q = (
+      peopleMoreSearchEl && peopleMoreSearchEl.value
+        ? peopleMoreSearchEl.value
+        : ""
     )
       .trim()
       .toLowerCase();
@@ -255,7 +262,7 @@
   function renderFollowing() {
     const following = getFollowingArray();
     const followedUsers = (appData.users || []).filter(
-      (u) => u.id !== currentUser.id && following.includes(u.id)
+      (u) => u.id !== currentUser.id && following.includes(u.id),
     );
 
     followingListEl.innerHTML = "";
@@ -280,7 +287,9 @@
       img.className = "people-avatar";
       img.src = getAvatarSrc(u);
       img.alt = u.username;
-      img.onerror = () => { img.src = PLACEHOLDER_AVATAR; };
+      img.onerror = () => {
+        img.src = PLACEHOLDER_AVATAR;
+      };
 
       const textWrap = document.createElement("div");
 
@@ -323,18 +332,19 @@
   function toggleFollow(targetId) {
     if (!targetId || targetId === currentUser.id) return;
 
-    const me     = appData.users.find((u) => u.id === currentUser.id);
+    const me = appData.users.find((u) => u.id === currentUser.id);
     const target = appData.users.find((u) => u.id === targetId);
     if (!me || !target) return;
 
-    if (!me.following || me.following.length === undefined)     me.following = [];
-    if (!target.followers || target.followers.length === undefined) target.followers = [];
+    if (!me.following || me.following.length === undefined) me.following = [];
+    if (!target.followers || target.followers.length === undefined)
+      target.followers = [];
 
     const alreadyFollowing = me.following.includes(targetId);
 
     if (alreadyFollowing) {
-      me.following      = me.following.filter((id) => id !== targetId);
-      target.followers  = target.followers.filter((id) => id !== me.id);
+      me.following = me.following.filter((id) => id !== targetId);
+      target.followers = target.followers.filter((id) => id !== me.id);
     } else {
       me.following.push(targetId);
       target.followers.push(me.id);
@@ -345,27 +355,63 @@
     saveAndRefresh();
   }
 
-  function getFeedPosts() {
-    if (window.OrbitPosts && typeof window.OrbitPosts.getFeedPosts === "function") {
-      return window.OrbitPosts.getFeedPosts(appData);
+  // async function getFeedPosts() {
+  //   try {
+  //     const currentUserId = 1;
+
+  //     const res = await fetch(
+  //       `http://localhost:3000/api/feed?userId=${currentUserId}`,
+  //     );
+
+  //     if (!res.ok) {
+  //       throw new Error("Failed to fetch feed");
+  //     }
+
+  //     const posts = await res.json();
+  //     return posts;
+  //   } catch (err) {
+  //     console.error("Error loading feed posts:", err);
+  //     return [];
+  //   }
+  // }
+
+  async function getFeedPosts() {
+    try {
+      const currentUserId = "u1";
+  
+      const res = await fetch(`http://localhost:3000/api/feed?userId=${currentUserId}`);
+  
+      const text = await res.text();
+  
+      const posts = JSON.parse(text);
+  
+      return posts;
+    } catch (err) {
+      console.error("Error loading feed posts:", err);
+      return [];
     }
-    const allowed = getFollowingArray().slice();
-    allowed.push(currentUser.id);
-    return (appData.posts || []).filter((p) => allowed.includes(p.userId));
   }
 
-  function renderFeedPosts() {
-    const posts = getFeedPosts();
-    if (window.OrbitPosts && typeof window.OrbitPosts.initPostsList === "function") {
-      window.OrbitPosts.initPostsList(feedPostsListEl, {
-        appData,
-        posts,
-        showDelete: true,
-        showCommentForm: true,
-        cardIsView: true,
-      });
-    } else {
-      feedPostsListEl.innerHTML = "<li>Could not load posts.</li>";
+  async function renderFeedPosts() {
+    try {
+      const posts = await getFeedPosts();
+      if (
+        window.OrbitPosts &&
+        typeof window.OrbitPosts.initPostsList === "function"
+      ) {
+        window.OrbitPosts.initPostsList(feedPostsListEl, {
+          appData,
+          posts,
+          showDelete: true,
+          showCommentForm: true,
+          cardIsView: true,
+        });
+      } else {
+        feedPostsListEl.innerHTML = "<li>Could not load posts.</li>";
+      }
+    } catch (err) {
+      console.error("Error rendering feed posts:", err);
+      feedPostsListEl.innerHTML = "<li>Failed to load posts.</li>";
     }
   }
 
@@ -375,42 +421,39 @@
     window.location.href = "../login/login.html";
   });
 
-  createPostForm.addEventListener("submit", (e) => {
+  createPostForm.addEventListener("submit", async (e) => {
     e.preventDefault();
+  
     const text = (createPostText.value || "").trim();
     if (!text && pendingImages.length === 0) return;
-
-    const newPost = {
-      id:        "p_" + Date.now().toString(36),
-      userId:    currentUser.id,
-      content:   text,
-      images:    pendingImages.slice(),
-      timestamp: new Date().toISOString(),
-      likes:     [],
-      comments:  [],
-    };
-
-    if (!appData.posts || appData.posts.length === undefined) appData.posts = [];
-    appData.posts.push(newPost);
-
-    const success = saveAppData(appData);
-    if (!success) {
-      appData.posts.pop();
-      return;
+  
+    try {
+      const res = await fetch("http://localhost:3000/api/posts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: "u1",
+          content: text,
+          images: pendingImages.slice(),
+        }),
+      });
+  
+      if (!res.ok) {
+        throw new Error("Failed to create post");
+      }
+  
+      createPostText.value = "";
+      pendingImages = [];
+      renderImagePreviews();
+  
+      await renderFeedPosts();
+      feedPostsListEl.scrollIntoView({ behavior: "smooth", block: "start" });
+    } catch (err) {
+      console.error("Error creating post:", err);
+      alert("Failed to create post.");
     }
-
-    createPostText.value = "";
-    pendingImages = [];
-    renderImagePreviews();
-    renderTopInfo();
-    renderPeopleYouMayKnow();
-    renderFollowing();
-    if (peopleMoreTabEl && !peopleMoreTabEl.classList.contains("hidden")) {
-      renderPeopleMoreList();
-    }
-    renderFeedPosts();
-
-    feedPostsListEl.scrollIntoView({ behavior: "smooth", block: "start" });
   });
 
   renderTopInfo();
@@ -433,7 +476,8 @@
     };
 
     peopleViewMoreBtn.addEventListener("click", openTab);
-    if (peopleMoreCloseBtn) peopleMoreCloseBtn.addEventListener("click", closeTab);
+    if (peopleMoreCloseBtn)
+      peopleMoreCloseBtn.addEventListener("click", closeTab);
 
     if (peopleMoreSearchEl) {
       peopleMoreSearchEl.addEventListener("input", () => {
@@ -442,7 +486,11 @@
     }
 
     window.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && peopleMoreTabEl && !peopleMoreTabEl.classList.contains("hidden")) {
+      if (
+        e.key === "Escape" &&
+        peopleMoreTabEl &&
+        !peopleMoreTabEl.classList.contains("hidden")
+      ) {
         closeTab();
       }
     });

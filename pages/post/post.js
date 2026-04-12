@@ -80,17 +80,26 @@
 
   function resolvePosts(appData, options) {
     if (options.posts && options.posts.length !== undefined) {
+      const allAreObjects = options.posts.every(
+        (p) => p && typeof p === "object"
+      );
+  
+      if (allAreObjects) {
+        return options.posts;
+      }
+  
       const ids = options.posts
         .map((p) => (typeof p === "string" ? p : p && p.id ? p.id : null))
         .filter(Boolean);
-
+  
       const postsById = {};
       (appData.posts || []).forEach((p) => {
         postsById[p.id] = p;
       });
-
+  
       return ids.map((id) => postsById[id]).filter(Boolean);
     }
+  
     if (typeof options.getPosts === "function") return options.getPosts(appData);
     return appData.posts || [];
   }
@@ -118,7 +127,10 @@
     li.className = "orbit-post";
     li.dataset.postId = post.id;
 
-    const author     = getUsername(usersById, post.userId);
+    // const author     = getUsername(usersById, post.userId);
+    const author =
+  (post.author && post.author.username) ||
+  getUsername(usersById, post.userId);
     const handle     = toHandle(author);
     const postTime   = formatDate(getPostTimestamp(post));
     const likeCount  = post.likes && post.likes.length !== undefined ? post.likes.length : 0;
@@ -132,7 +144,8 @@
     const avatarImg = document.createElement("img");
     avatarImg.className = "orbit-post-avatar";
     avatarImg.alt = author;
-    const postUser = usersById[post.userId];
+    // const postUser = usersById[post.userId];
+    const postUser = usersById[post.userId] || post.author || null;
     const pic = postUser && postUser.profilePicture ? postUser.profilePicture : "";
     if (pic && !pic.includes("default.png")) {
       if (pic.startsWith("data:")) {
@@ -289,7 +302,11 @@
       comments.forEach((c) => {
         const cLi = document.createElement("li");
         cLi.className = "orbit-comment";
-        const cAuthor = getUsername(usersById, c.userId);
+        // const cAuthor = getUsername(usersById, c.userId);
+        const cAuthor =
+       (c.author && c.author.username) ||
+        getUsername(usersById, c.userId);
+
         const cTime   = formatDate(getCommentTimestamp(c));
         const cText   = getCommentContent(c);
         cLi.innerHTML =
