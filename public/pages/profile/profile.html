@@ -20,7 +20,13 @@
     <nav class="top-links" aria-label="Primary navigation">
       <a class="top-link" href="../feed/feed.html">Feed</a>
       <a class="top-link top-link-active" href="../profile/profile.html">Profile</a>
-      <img id="nav-avatar" class="nav-avatar hidden" src="../../assets/images/profile.svg" alt="">
+      <div class="nav-avatar-wrap hidden" id="navAvatarWrap">
+        <img id="nav-avatar" class="nav-avatar" src="../../assets/images/profile.svg" alt="">
+        <div id="navAvatarDropdown" class="orbit-dropdown orbit-dropdown-right hidden">
+          <button type="button" id="navDropdownEditProfile" class="orbit-dropdown-item">Edit Profile</button>
+          <button type="button" id="navDropdownAnalysis"    class="orbit-dropdown-item">Analysis</button>
+        </div>
+      </div>
       <button id="logoutBtn" type="button" class="top-link top-link-logout">Logout</button>
     </nav>
   </header>
@@ -48,9 +54,17 @@
                 <h1 id="profile-username" class="profile-display-name">username</h1>
                 <p id="profile-handle" class="profile-handle">@username</p>
               </div>
-              <button id="editProfileBtn" type="button" class="btn btn-secondary profile-edit-btn">
-                Edit Profile
-              </button>
+              <div class="profile-menu-wrap" id="profileMenuWrap">
+                <button id="editProfileBtn" type="button" class="dots-btn" aria-label="Options" aria-haspopup="true">
+                  <svg width="4" height="18" viewBox="0 0 4 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="2" cy="2"  r="2"/><circle cx="2" cy="10" r="2"/><circle cx="2" cy="18" r="2"/>
+                  </svg>
+                </button>
+                <div id="profileDropdown" class="orbit-dropdown hidden">
+                  <button type="button" id="dropdownEditProfile" class="orbit-dropdown-item">Edit Profile</button>
+                  <button type="button" id="dropdownAnalysis"    class="orbit-dropdown-item">Analysis</button>
+                </div>
+              </div>
               <button id="followProfileBtn" type="button" class="btn btn-primary profile-follow-btn hidden">
                 Follow
               </button>

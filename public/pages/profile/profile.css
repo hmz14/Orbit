@@ -111,7 +111,7 @@ body {
   background: #fff;
   border-radius: 16px;
   border: 1px solid #e5e7eb;
-  overflow: hidden;
+  overflow: visible;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
@@ -120,6 +120,7 @@ body {
   background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 45%, #a78bfa 100%);
   background-size: cover;
   background-position: center;
+  border-radius: 16px 16px 0 0;
 }
 
 .profile-hero-body {
@@ -128,6 +129,8 @@ body {
   align-items: flex-start;
   padding: 0 1.25rem 1.25rem;
   margin-top: -48px;
+  border-radius: 0 0 16px 16px;
+  background: #fff;
 }
 
 .profile-hero-avatar {
@@ -688,4 +691,77 @@ body {
   .profile-content-row > .profile-create-post.hidden + .profile-posts-block {
     grid-column: 1;
   }
+}
+
+/* ── Three-dots button ─────────────────────────── */
+.dots-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+  color: #6b7280;
+  padding: 0;
+  flex-shrink: 0;
+  transition: background 0.15s, color 0.15s;
+}
+.dots-btn:hover {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+/* ── Dropdown wrapper ──────────────────────────── */
+.profile-menu-wrap {
+  position: relative;
+}
+
+.nav-avatar-wrap {
+  position: relative;
+  cursor: pointer;
+}
+.nav-avatar-wrap.hidden { display: none; }
+
+/* ── Dropdown panel ────────────────────────────── */
+.orbit-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 150px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  z-index: 200;
+  overflow: hidden;
+}
+
+.orbit-dropdown-right {
+  left: auto;
+  right: 0;
+}
+
+.orbit-dropdown.hidden { display: none !important; }
+
+.orbit-dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 0.88rem;
+  font-weight: 600;
+  font-family: "Inter", sans-serif;
+  color: #374151;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background 0.12s;
+  text-decoration: none;
+}
+.orbit-dropdown-item:hover {
+  background: #f3f4f6;
+  color: #111827;
 }

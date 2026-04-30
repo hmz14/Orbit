@@ -88,19 +88,31 @@
         <div class="card about-card">
           <h3 class="sidebar-title">About</h3>
           <div class="about-user-row">
-            <img
-              id="about-avatar"
-              class="about-avatar"
-              src="../../assets/images/profile.svg"
-              alt="avatar"
-            >
+            <div class="about-avatar-wrap" id="aboutAvatarWrap">
+              <img
+                id="about-avatar"
+                class="about-avatar"
+                src="../../assets/images/profile.svg"
+                alt="avatar"
+              >
+            </div>
             <div class="about-info">
               <p id="about-name" class="about-name">Username</p>
               <p id="about-handle" class="about-handle">@username</p>
             </div>
+            <div class="about-menu-wrap" id="aboutMenuWrap">
+              <button id="aboutDotsBtn" type="button" class="dots-btn" aria-label="Options" aria-haspopup="true">
+                <svg width="4" height="18" viewBox="0 0 4 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="2" cy="2"  r="2"/><circle cx="2" cy="10" r="2"/><circle cx="2" cy="18" r="2"/>
+                </svg>
+              </button>
+              <div id="aboutDropdown" class="orbit-dropdown orbit-dropdown-right hidden">
+                <a href="../profile/profile.html" class="orbit-dropdown-item">Edit Profile</a>
+                <button type="button" id="aboutAnalysisBtn" class="orbit-dropdown-item">Analysis</button>
+              </div>
+            </div>
           </div>
           <p id="about-bio" class="about-bio">Your bio</p>
-          <a class="btn btn-secondary about-edit-btn" href="../profile/profile.html">Edit Profile</a>
         </div>
       </div>
 

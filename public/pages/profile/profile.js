@@ -22,6 +22,8 @@ const cancelEditBtn1      = document.getElementById("cancelEditBtn");
 const cancelEditBtn2      = document.getElementById("cancelEditBtn2");
 const logoutBtn           = document.getElementById("logoutBtn");
 const navAvatarEl         = document.getElementById("nav-avatar");
+const navAvatarWrapEl     = document.getElementById("navAvatarWrap");
+const navAvatarDropdown   = document.getElementById("navAvatarDropdown");
 const heroAvatarEl        = document.getElementById("profile-hero-avatar");
 const profileHandleEl     = document.getElementById("profile-handle");
 const postsTitleEl        = document.getElementById("profile-posts-title");
@@ -123,9 +125,9 @@ function render() {
 
   if (navAvatarEl && currentUser) {
     navAvatarEl.src = getAvatarSrc(currentUser);
-    navAvatarEl.classList.remove("hidden");
     navAvatarEl.onerror = () => { navAvatarEl.src = PLACEHOLDER_AVATAR; };
   }
+  if (navAvatarWrapEl) navAvatarWrapEl.classList.remove("hidden");
 
   refreshHeader();
   renderPosts();
@@ -220,12 +222,22 @@ async function renderPosts() {
 function setupEditForm() {
   let pendingAvatarBase64 = null;
 
+  const profileDropdownEl    = document.getElementById("profileDropdown");
+  const dropdownEditProfile  = document.getElementById("dropdownEditProfile");
+  const dropdownAnalysis     = document.getElementById("dropdownAnalysis");
+
+  const closeAllDropdowns = () => {
+    if (profileDropdownEl)  profileDropdownEl.classList.add("hidden");
+    if (navAvatarDropdown)  navAvatarDropdown.classList.add("hidden");
+  };
+
   const closeEditTab = () => {
     editTabEl.classList.add("hidden");
     pendingAvatarBase64 = null;
   };
 
   const openEditTab = () => {
+    closeAllDropdowns();
     editUsernameEl.value = targetUser.username || "";
     editEmailEl.value    = targetUser.email    || "";
     editBioEl.value      = targetUser.bio      || "";
@@ -238,7 +250,42 @@ function setupEditForm() {
     editUsernameEl.focus();
   };
 
-  editBtn.addEventListener("click", openEditTab);
+  const goToAnalysis = () => {
+    closeAllDropdowns();
+    window.location.href = `/statistics/my?userId=${profileId}`;
+  };
+
+  // Dots button on profile hero toggles dropdown
+  if (editBtn && profileDropdownEl) {
+    editBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const isHidden = profileDropdownEl.classList.contains("hidden");
+      closeAllDropdowns();
+      if (isHidden) profileDropdownEl.classList.remove("hidden");
+    });
+  }
+
+  if (dropdownEditProfile) dropdownEditProfile.addEventListener("click", openEditTab);
+  if (dropdownAnalysis)    dropdownAnalysis.addEventListener("click", goToAnalysis);
+
+  // Nav-avatar click toggles its own dropdown
+  if (navAvatarWrapEl && navAvatarDropdown) {
+    navAvatarWrapEl.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const isHidden = navAvatarDropdown.classList.contains("hidden");
+      closeAllDropdowns();
+      if (isHidden) navAvatarDropdown.classList.remove("hidden");
+    });
+  }
+
+  const navEdit     = document.getElementById("navDropdownEditProfile");
+  const navAnalysis = document.getElementById("navDropdownAnalysis");
+  if (navEdit)     navEdit.addEventListener("click", openEditTab);
+  if (navAnalysis) navAnalysis.addEventListener("click", goToAnalysis);
+
+  // Close dropdowns when clicking outside
+  document.addEventListener("click", closeAllDropdowns);
+
   if (cancelEditBtn1) cancelEditBtn1.addEventListener("click", closeEditTab);
   if (cancelEditBtn2) cancelEditBtn2.addEventListener("click", closeEditTab);
 

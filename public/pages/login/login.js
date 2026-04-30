@@ -38,7 +38,9 @@ loginForm.addEventListener("submit", async (event) => {
     }
 
     localStorage.setItem("orbit-uid", user.id);
-    window.location.href = "../feed/feed.html";
+    window.location.href = user.role === "ADMIN"
+      ? "../admin/admin.html"
+      : "../feed/feed.html";
   } catch (err) {
     console.error("Login error:", err);
     showMessage("Could not connect to server. Is it running?");

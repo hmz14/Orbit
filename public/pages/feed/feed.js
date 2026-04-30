@@ -420,6 +420,36 @@
     });
   }
 
+  // ---- About card dropdown ----
+  const aboutDotsBtn    = document.getElementById("aboutDotsBtn");
+  const aboutAvatarWrap = document.getElementById("aboutAvatarWrap");
+  const aboutDropdown   = document.getElementById("aboutDropdown");
+  const aboutAnalysisBtn = document.getElementById("aboutAnalysisBtn");
+
+  function closeAboutDropdown() {
+    if (aboutDropdown) aboutDropdown.classList.add("hidden");
+  }
+
+  function toggleAboutDropdown(e) {
+    e.stopPropagation();
+    if (!aboutDropdown) return;
+    const isHidden = aboutDropdown.classList.contains("hidden");
+    closeAboutDropdown();
+    if (isHidden) aboutDropdown.classList.remove("hidden");
+  }
+
+  if (aboutDotsBtn)    aboutDotsBtn.addEventListener("click", toggleAboutDropdown);
+  if (aboutAvatarWrap) aboutAvatarWrap.addEventListener("click", toggleAboutDropdown);
+
+  if (aboutAnalysisBtn) {
+    aboutAnalysisBtn.addEventListener("click", () => {
+      closeAboutDropdown();
+      window.location.href = `/statistics/my?userId=${currentUserId}`;
+    });
+  }
+
+  document.addEventListener("click", closeAboutDropdown);
+
   // ---- Boot ----
   loadInitialData().then(() => {
     renderTopInfo();

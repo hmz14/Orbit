@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Statistics – Orbit</title>
+  <link rel="stylesheet" href="admin.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Top bar -->
+  <header class="admin-topbar">
+    <div class="admin-brand">
+      <img class="admin-brand-logo" src="../../assets/icons/orbit_logo.png" alt="Orbit">
+      <span class="admin-brand-text">Statistics</span>
+    </div>
+    <button id="logoutBtn" type="button" class="admin-avatar" title="Logout">
+      <span id="admin-initials">A</span>
+    </button>
+  </header>
+
+  <!-- Page body -->
+  <main class="admin-body">
+    <div class="admin-card">
+
+      <!-- Loading / error states -->
+      <div id="stats-loading" class="stats-loading">Loading statistics…</div>
+      <div id="stats-error"   class="stats-error   hidden"></div>
+
+      <!-- Dashboard content (hidden until data loads) -->
+      <div id="dashboard" class="hidden">
+
+        <!-- Section: Dashboard Overview -->
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">Dashboard Overview</h2>
+            <p class="section-sub">Overview of your platform's key statistics.</p>
+          </div>
+          <div class="date-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span id="today-date">Today</span>
+          </div>
+        </div>
+
+        <div class="overview-grid">
+          <div class="overview-card">
+            <div class="ov-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <div class="ov-info">
+              <p class="ov-label">Total Users</p>
+              <strong id="stat-total-users" class="ov-value">—</strong>
+              <span class="ov-sub">All registered users</span>
+            </div>
+          </div>
+          <div class="overview-card">
+            <div class="ov-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </div>
+            <div class="ov-info">
+              <p class="ov-label">Total Posts</p>
+              <strong id="stat-total-posts" class="ov-value">—</strong>
+              <span class="ov-sub">All posts created</span>
+            </div>
+          </div>
+          <div class="overview-card">
+            <div class="ov-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </div>
+            <div class="ov-info">
+              <p class="ov-label">Total Likes</p>
+              <strong id="stat-total-likes" class="ov-value">—</strong>
+              <span class="ov-sub">All likes received</span>
+            </div>
+          </div>
+          <div class="overview-card">
+            <div class="ov-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </div>
+            <div class="ov-info">
+              <p class="ov-label">Total Comments</p>
+              <strong id="stat-total-comments" class="ov-value">—</strong>
+              <span class="ov-sub">All comments made</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: User & Content Summary -->
+        <h3 class="section-heading">User &amp; Content Summary</h3>
+        <div class="summary-grid">
+          <div class="summary-card">
+            <p class="sum-label">New Users Today</p>
+            <strong id="stat-new-users" class="sum-value">—</strong>
+          </div>
+          <div class="summary-card">
+            <p class="sum-label">New Posts Today</p>
+            <strong id="stat-new-posts" class="sum-value">—</strong>
+          </div>
+          <div class="summary-card">
+            <p class="sum-label">New Comments Today</p>
+            <strong id="stat-new-comments" class="sum-value">—</strong>
+          </div>
+          <div class="summary-card">
+            <p class="sum-label">New Likes Today</p>
+            <strong id="stat-new-likes" class="sum-value">—</strong>
+          </div>
+          <div class="summary-card">
+            <p class="sum-label">Active Users Today</p>
+            <strong id="stat-active-today" class="sum-value">—</strong>
+          </div>
+        </div>
+
+        <!-- Section: System Overview -->
+        <h3 class="section-heading">System Overview</h3>
+        <div class="system-grid">
+          <div class="system-card">
+            <div class="sys-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <p class="sys-label">Admins</p>
+            <strong id="stat-admin-count" class="sys-value">—</strong>
+            <span class="sys-sub">Total admin accounts</span>
+          </div>
+          <div class="system-card">
+            <div class="sys-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <p class="sys-label">Most Followed</p>
+            <strong id="stat-most-followed" class="sys-value sys-value-sm">—</strong>
+            <span id="stat-most-followed-sub" class="sys-sub">—</span>
+          </div>
+          <div class="system-card">
+            <div class="sys-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <p class="sys-label">Most Active User</p>
+            <strong id="stat-most-active" class="sys-value sys-value-sm">—</strong>
+            <span id="stat-most-active-sub" class="sys-sub">—</span>
+          </div>
+          <div class="system-card">
+            <div class="sys-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <p class="sys-label">Posts Last 7 Days</p>
+            <strong id="stat-posts-7d" class="sys-value">—</strong>
+            <span class="sys-sub">Recent activity</span>
+          </div>
+          <div class="system-card">
+            <div class="sys-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            </div>
+            <p class="sys-label">System Uptime</p>
+            <strong class="sys-value">99.9%</strong>
+            <span class="sys-sub">Server uptime</span>
+          </div>
+        </div>
+
+        <p class="realtime-note">Statistics are updated in real-time.</p>
+
+      </div><!-- /dashboard -->
+    </div><!-- /admin-card -->
+  </main>
+
+  <script src="admin.js"></script>
+</body>
+</html>

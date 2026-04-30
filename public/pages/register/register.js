@@ -56,11 +56,13 @@ registerForm.addEventListener("submit", async (event) => {
     return;
   }
 
+  const role = email.includes("@admin") ? "ADMIN" : "USER";
+
   try {
     const res = await fetch(`${API}/api/users`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, email, password }),
+      body: JSON.stringify({ username, email, password, role }),
     });
 
     if (res.status === 409) {
@@ -76,7 +78,9 @@ registerForm.addEventListener("submit", async (event) => {
 
     const user = await res.json();
     localStorage.setItem("orbit-uid", user.id);
-    window.location.href = "../feed/feed.html";
+    window.location.href = user.role === "ADMIN"
+      ? "../admin/admin.html"
+      : "../feed/feed.html";
   } catch (err) {
     console.error("Register error:", err);
     showMessage("Could not connect to server. Is it running?");
