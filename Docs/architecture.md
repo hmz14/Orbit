@@ -1,52 +1,104 @@
 # Phase 2 Folder Architecture
 
-Based on the requirements in `discription.md` (specifically the move to Next.js, Prisma, and the App Router), here is the recommended folder architecture for your final Phase 2 project:
-
 ```text
 Orbit/
-├── prisma/                     # Database configuration and models
-│   ├── schema.prisma           # Your database models (User, Post, Comment, etc.)
-│   └── seed.js                 # Script to initialize your database with dummy data
 │
-├── app/                        # Next.js App Router (Frontend Pages & Backend APIs)
-│   ├── api/                    # Backend API Routes
-│   │   ├── posts/
-│   │   │   └── route.js        # GET/POST for posts
+├── pages/                         
+│   ├── login/
+│   │   ├── login.html
+│   │   ├── login.css
+│   │   └── login.js
+│   ├── register/
+│   │   ├── register.html
+│   │   ├── register.css
+│   │   └── register.js
+│   ├── feed/
+│   │   ├── feed.html
+│   │   ├── feed.css
+│   │   └── feed.js
+│   ├── profile/
+│   │   ├── profile.html
+│   │   ├── profile.css
+│   │   └── profile.js
+│   ├── post/
+│   │   ├── post.html
+│   │   ├── post.css
+│   │   └── post.js
+│   └── shared/
+│       ├── shared.css              # Shared styles across all pages
+│       └── storage.js              # localStorage helpers (Phase 1)
+│
+├── app/                            # Phase 2 — Next.js backend + statistics page only
+│   ├── api/                        # Backend API routes
 │   │   ├── users/
-│   │   │   └── route.js        # GET/POST for users
-│   │   └── comments/
-│   │       └── route.js        # GET/POST for comments
+│   │   │   └── route.js            # GET all users / POST new user
+│   │   ├── posts/
+│   │   │   └── route.js            # GET all posts / POST new post
+│   │   ├── comments/
+│   │   │   └── route.js            # GET comments / POST new comment
+│   │   ├── likes/
+│   │   │   └── route.js            # POST like / DELETE unlike
+│   │   └── follow/
+│   │       └── route.js            # POST follow / DELETE unfollow
 │   │
-│   ├── statistics/             # NEW: Phase 2 Statistics Page
-│   │   └── page.js             # Displays the 6 required statistics
-│   │
-│   ├── profile/                # Profile Page
-│   │   └── page.js
-│   │
-│   ├── layout.js               # Main layout (Navbar, Footer, etc. kept from Phase 1)
-│   ├── page.js                 # Home page / News Feed
-│   └── globals.css             # Global styles (moved from Phase 1)
+│   └── statistics/
+│       └── page.js                 # Statistics page (6 required analytics) — NEW in Phase 2
 │
-├── components/                 # Reusable UI Components (Your Phase 1 UI)
-│   ├── Post.js                 # Post component
-│   ├── Navbar.js               # Navigation bar
-│   └── Comment.js              # Comment component
+├── lib/                            # Shared utilities and database layer
+│   ├── prisma.js                   # Prisma client singleton
+│   └── repositories/               # Data repository layer (one file per model)
+│       ├── userRepository.js       # CRUD + search for users
+│       ├── postRepository.js       # CRUD + most liked posts
+│       ├── commentRepository.js    # CRUD for comments
+│       ├── likeRepository.js       # like / unlike / count
+│       └── followRepository.js     # follow / unfollow / counts
 │
-├── lib/                        # Utility functions and database connection
-│   └── prisma.js               # Initializes and exports the Prisma Client
+├── prisma/                         # Database configuration
+│   ├── schema.prisma               # Data models: User, Post, Comment, Like, Follow
+│   ├── seed.js                     # Populates DB with 100 users, 200 posts, etc.
+│   └── migrations/                 # Auto-generated migration history
 │
-├── public/                     # Static assets
-│   └── images/                 # Logos, default avatars, etc.
+├── assets/                         # Static assets
+│   ├── icons/
+│   │   └── orbit_logo.png
+│   ├── images/
+│   │   └── profile.svg
+│   ├── post_pic/                   # Sample post images
+│   └── profile_pic/                # Sample profile pictures
 │
-├── .env                        # Environment variables (Database URL, etc.)
-├── package.json                # Project dependencies (Next.js, Prisma, etc.)
-└── next.config.js              # Next.js configuration
+├── data/
+│   └── seed.js                     # Phase 1 seed data (localStorage)
+│
+├── Docs/
+│   └── architecture.md             # This file
+│
+├── .env                            # DATABASE_URL and other environment variables
+├── package.json
+└── discription.md                  # Project requirements
 ```
 
-### Key Areas to Focus On for Phase 2:
+---
 
-1. **`prisma/` Directory:** This is entirely new for Phase 2. `schema.prisma` is where you will define your relational models (User, Post, Like, Follow), and `seed.js` is where you write the script to populate the database.
-2. **`app/api/` Directory:** This acts as your backend. Instead of reading from `localStorage`, your frontend will make `fetch()` requests to these routes, which will in turn query the database using Prisma.
-3. **`app/statistics/page.js`:** This is the brand new page required for Phase 2 to show your database analytics (average followers, most active user, etc.).
-4. **`components/` Directory:** This is where you will reuse your UI from Phase 1. You'll convert your vanilla HTML/JS into React components, keeping the same CSS and design.
-5. **`lib/prisma.js`:** A best practice file to ensure you don't open too many database connections during development. It just exports a single instance of the Prisma client for your API routes to use.
+### Layer Responsibilities
+
+| Layer | Location | Purpose |
+|---|---|---|
+| **Phase 1 UI** | `pages/` | Original HTML pages — kept as reference |
+| **API Routes** | `app/api/` | Backend endpoints — call repositories, return JSON |
+| **Repositories** | `lib/repositories/` | All DB queries live here — no raw Prisma in routes |
+| **Prisma Client** | `lib/prisma.js` | Single shared instance — prevents connection leaks |
+| **Schema** | `prisma/schema.prisma` | Source of truth for all data models |
+| **Seed** | `prisma/seed.js` | Populates DB with realistic dummy data |
+
+---
+
+### Data Flow
+
+```
+Browser
+  └── fetch("/api/posts")
+        └── app/api/posts/route.js
+              └── lib/repositories/postRepository.js
+                    └── lib/prisma.js
+                          └── prisma/dev.db  (SQLite)
+```
