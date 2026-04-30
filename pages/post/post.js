@@ -1,4 +1,6 @@
 (function () {
+  const API_BASE = "http://localhost:3000";
+
   function ensurePostStyles() {
     if (document.getElementById("orbit-post-styles")) return;
     const links = document.querySelectorAll('link[rel="stylesheet"]');
@@ -67,41 +69,13 @@
 
   function buildUsersById(users) {
     const map = {};
-    (users || []).forEach((u) => {
-      map[u.id] = u;
-    });
+    (users || []).forEach((u) => { map[u.id] = u; });
     return map;
   }
 
   function getUsername(usersById, userId) {
     const u = usersById[userId];
     return u && u.username ? u.username : "Unknown";
-  }
-
-  function resolvePosts(appData, options) {
-    if (options.posts && options.posts.length !== undefined) {
-      const allAreObjects = options.posts.every(
-        (p) => p && typeof p === "object"
-      );
-  
-      if (allAreObjects) {
-        return options.posts;
-      }
-  
-      const ids = options.posts
-        .map((p) => (typeof p === "string" ? p : p && p.id ? p.id : null))
-        .filter(Boolean);
-  
-      const postsById = {};
-      (appData.posts || []).forEach((p) => {
-        postsById[p.id] = p;
-      });
-  
-      return ids.map((id) => postsById[id]).filter(Boolean);
-    }
-  
-    if (typeof options.getPosts === "function") return options.getPosts(appData);
-    return appData.posts || [];
   }
 
   function sortPostsNewestFirst(posts) {
@@ -127,16 +101,21 @@
     li.className = "orbit-post";
     li.dataset.postId = post.id;
 
-    // const author     = getUsername(usersById, post.userId);
-    const author =
-  (post.author && post.author.username) ||
-  getUsername(usersById, post.userId);
-    const handle     = toHandle(author);
-    const postTime   = formatDate(getPostTimestamp(post));
-    const likeCount  = post.likes && post.likes.length !== undefined ? post.likes.length : 0;
-    const commentCount = post.comments && post.comments.length !== undefined ? post.comments.length : 0;
-    const iLiked     = currentUserId && post.likes && post.likes.length !== undefined && post.likes.includes(currentUserId);
-    const isOwn      = currentUserId && post.userId === currentUserId;
+    const author = (post.author && post.author.username) || getUsername(usersById, post.authorId || post.userId);
+    const handle   = toHandle(author);
+    const postTime = formatDate(getPostTimestamp(post));
+
+    const likeCount    = post.likes    && Array.isArray(post.likes)    ? post.likes.length    : 0;
+    const commentCount = post.comments && Array.isArray(post.comments) ? post.comments.length : 0;
+
+    // Handle both API shape ({ userId, postId }) and legacy shape (array of user IDs)
+    const iLiked = currentUserId && Array.isArray(post.likes) && post.likes.some(
+      (l) => (typeof l === "object" ? l.userId === currentUserId : l === currentUserId)
+    );
+
+    // authorId (API) with fallback to userId (legacy)
+    const postAuthorId = post.authorId !== undefined ? post.authorId : post.userId;
+    const isOwn = currentUserId && postAuthorId === currentUserId;
 
     const topRow = document.createElement("div");
     topRow.className = "orbit-post-top";
@@ -144,8 +123,8 @@
     const avatarImg = document.createElement("img");
     avatarImg.className = "orbit-post-avatar";
     avatarImg.alt = author;
-    // const postUser = usersById[post.userId];
-    const postUser = usersById[post.userId] || post.author || null;
+
+    const postUser = post.author || usersById[postAuthorId] || null;
     const pic = postUser && postUser.profilePicture ? postUser.profilePicture : "";
     if (pic && !pic.includes("default.png")) {
       if (pic.startsWith("data:")) {
@@ -184,7 +163,7 @@
     authorLink.addEventListener("click", (e) => {
       e.stopPropagation();
       const url = new URL("../profile/profile.html", window.location.href);
-      url.searchParams.set("userId", post.userId);
+      url.searchParams.set("userId", postAuthorId);
       window.location.href = url.toString();
     });
 
@@ -195,7 +174,7 @@
     contentEl.className = "orbit-post-content";
     contentEl.textContent = safeStr(post.content);
 
-    const images = post.images && post.images.length !== undefined ? post.images.filter(Boolean) : [];
+    const images = post.images && Array.isArray(post.images) ? post.images.filter(Boolean) : [];
     let imagesEl = null;
     if (images.length > 0) {
       imagesEl = document.createElement("div");
@@ -226,7 +205,7 @@
       e.preventDefault();
       e.stopPropagation();
       if (!currentUserId) return;
-      onAction("like", post.id);
+      onAction("like", post.id, { currentlyLiked: iLiked });
     });
 
     const commentBtn = document.createElement("button");
@@ -255,7 +234,6 @@
 
         const overlay = document.createElement("div");
         overlay.className = "orbit-delete-overlay";
-
         overlay.innerHTML =
           `<div class="orbit-delete-modal">` +
             `<h3 class="orbit-delete-modal-title">Delete post?</h3>` +
@@ -267,19 +245,15 @@
           `</div>`;
 
         const close = () => document.body.removeChild(overlay);
-
         overlay.querySelector(".orbit-delete-cancel-btn").addEventListener("click", close);
         overlay.querySelector(".orbit-delete-confirm-btn").addEventListener("click", () => {
           close();
           onAction("delete", post.id);
         });
-        overlay.addEventListener("click", (ev) => {
-          if (ev.target === overlay) close();
-        });
+        overlay.addEventListener("click", (ev) => { if (ev.target === overlay) close(); });
         document.addEventListener("keydown", function esc(ev) {
           if (ev.key === "Escape") { close(); document.removeEventListener("keydown", esc); }
         });
-
         document.body.appendChild(overlay);
       });
       actionBar.appendChild(deleteBtn);
@@ -291,7 +265,7 @@
     const commentsList = document.createElement("ul");
     commentsList.className = "orbit-comments-list";
 
-    const comments = post.comments && post.comments.length !== undefined ? post.comments : [];
+    const comments = post.comments && Array.isArray(post.comments) ? post.comments : [];
 
     if (comments.length === 0) {
       const emptyLi = document.createElement("li");
@@ -302,11 +276,7 @@
       comments.forEach((c) => {
         const cLi = document.createElement("li");
         cLi.className = "orbit-comment";
-        // const cAuthor = getUsername(usersById, c.userId);
-        const cAuthor =
-       (c.author && c.author.username) ||
-        getUsername(usersById, c.userId);
-
+        const cAuthor = (c.author && c.author.username) || getUsername(usersById, c.authorId || c.userId);
         const cTime   = formatDate(getCommentTimestamp(c));
         const cText   = getCommentContent(c);
         cLi.innerHTML =
@@ -373,10 +343,7 @@
         let isInteractive = false;
         const interactiveTags = ["BUTTON", "TEXTAREA", "INPUT", "SELECT", "FORM", "A"];
         while (el && el !== li) {
-          if (interactiveTags.includes(el.tagName)) {
-            isInteractive = true;
-            break;
-          }
+          if (interactiveTags.includes(el.tagName)) { isInteractive = true; break; }
           el = el.parentElement;
         }
         if (isInteractive) return;
@@ -392,7 +359,6 @@
 
   function renderPostsList({ containerEl, posts, state, options }) {
     containerEl.innerHTML = "";
-
     const sorted = sortPostsNewestFirst(posts || []);
 
     if (!sorted.length) {
@@ -412,45 +378,11 @@
     });
   }
 
-  function toggleLike(appData, postId, currentUserId) {
-    const post = (appData.posts || []).find((p) => p.id === postId);
-    if (!post) return;
-    if (!currentUserId) return;
-    if (!post.likes || post.likes.length === undefined) post.likes = [];
-
-    const idx = post.likes.indexOf(currentUserId);
-    if (idx === -1) post.likes.push(currentUserId);
-    else post.likes.splice(idx, 1);
-  }
-
-  function deletePost(appData, postId, currentUserId) {
-    if (!currentUserId) return;
-    const posts = appData.posts || [];
-    const newPosts = posts.filter((p) => !(p.id === postId && p.userId === currentUserId));
-    appData.posts = newPosts;
-  }
-
-  function addComment(appData, postId, userId, text) {
-    if (!userId) return;
-    const post = (appData.posts || []).find((p) => p.id === postId);
-    if (!post) return;
-    if (!post.comments || post.comments.length === undefined) post.comments = [];
-
-    const commentId = "c_" + Math.random().toString(36).slice(2) + "_" + Date.now().toString(36);
-    post.comments.push({
-      id: commentId,
-      userId: userId,
-      content: text,
-      timestamp: new Date().toISOString(),
-    });
-  }
-
   function renderPostsListShell(containerEl, options, state) {
     if (containerEl.tagName === "UL") {
       renderPostsList({ containerEl, posts: options.posts, state, options });
       return;
     }
-
     containerEl.innerHTML = "";
     const ul = document.createElement("ul");
     ul.className = "orbit-posts-list";
@@ -458,105 +390,134 @@
     renderPostsList({ containerEl: ul, posts: options.posts, state, options });
   }
 
+  async function apiToggleLike(postId, userId, currentlyLiked) {
+    if (currentlyLiked) {
+      await fetch(`${API_BASE}/api/likes?userId=${userId}&postId=${postId}`, { method: "DELETE" });
+    } else {
+      await fetch(`${API_BASE}/api/likes`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, postId }),
+      });
+    }
+  }
+
+  async function apiDeletePost(postId) {
+    await fetch(`${API_BASE}/api/posts?id=${postId}`, { method: "DELETE" });
+  }
+
+  async function apiAddComment(postId, userId, text) {
+    await fetch(`${API_BASE}/api/comments`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ content: text, authorId: userId, postId }),
+    });
+  }
+
   function initPostsList(containerEl, options = {}) {
     ensurePostStyles();
 
-    const appData = options.appData || (typeof loadAppData === "function" ? loadAppData() : null);
-    if (!appData) return;
+    const currentUserId = options.currentUserId !== undefined
+      ? Number(options.currentUserId)
+      : (localStorage.getItem("orbit-uid") ? Number(localStorage.getItem("orbit-uid")) : null);
+
+    const users = options.users || (options.appData ? options.appData.users || [] : []);
 
     const state = {
-      appData,
-      usersById: buildUsersById(appData.users || []),
-      currentUserId: appData.currentUserId,
+      usersById: buildUsersById(users),
+      currentUserId,
       options,
       onAction: () => {},
     };
 
-    state.onAction = (type, postId, payload) => {
-      if (type === "like") toggleLike(state.appData, postId, state.currentUserId);
-      if (type === "delete") deletePost(state.appData, postId, state.currentUserId);
-      if (type === "comment") addComment(state.appData, postId, state.currentUserId, payload && payload.text);
+    state.onAction = async (type, postId, payload) => {
+      try {
+        if (type === "like") {
+          await apiToggleLike(postId, state.currentUserId, payload && payload.currentlyLiked);
+        }
 
-      if (typeof saveAppData === "function") saveAppData(state.appData);
+        if (type === "delete") {
+          await apiDeletePost(postId);
+          if (typeof options.onDelete === "function") {
+            options.onDelete();
+            return;
+          }
+        }
 
-      if (type === "delete" && typeof options.onDelete === "function") {
-        options.onDelete();
-        return;
+        if (type === "comment") {
+          await apiAddComment(postId, state.currentUserId, payload && payload.text);
+        }
+
+        // Re-fetch then re-render
+        let newPosts = options.posts || [];
+        if (typeof options.onRefresh === "function") {
+          newPosts = await options.onRefresh();
+        }
+        const newOptions = Object.assign({}, options, { posts: newPosts });
+        renderPostsListShell(containerEl, newOptions, state);
+      } catch (err) {
+        console.error("Post action failed:", err);
       }
-
-      const resolved = resolvePosts(state.appData, options);
-      const newOptions = { ...options, posts: resolved };
-      renderPostsListShell(containerEl, newOptions, state);
     };
-
-    const resolved = resolvePosts(appData, options);
-    options.posts = options.posts || resolved;
 
     renderPostsListShell(containerEl, options, state);
   }
 
-  function getFeedPosts(appData) {
-    const currentUserId = appData.currentUserId;
-    if (!currentUserId) return [];
-
-    const me = (appData.users || []).find((u) => u.id === currentUserId);
-    if (!me) return [];
-
-    const followingIds = me.following && me.following.length !== undefined ? me.following : [];
-    const allowed = followingIds.concat([currentUserId]);
-    return (appData.posts || []).filter((p) => allowed.includes(p.userId));
-  }
-
-  function getUserPosts(appData, userId) {
-    return (appData.posts || []).filter((p) => p.userId === userId);
-  }
-
-  function initSinglePostPage() {
+  async function initSinglePostPage() {
     ensurePostStyles();
 
     const containerEl = document.getElementById("single-post-container");
     if (!containerEl) return;
 
-    const queryString = window.location.search.substring(1);
-    const params = queryString.split("&");
-    let postId = null;
-    for (let i = 0; i < params.length; i++) {
-      let pair = params[i].split("=");
-      if (pair[0] === "postId" || pair[0] === "id" || pair[0] === "post" || pair[0] === "pid") {
-        postId = pair[1];
-      }
-    }
+    const params = new URLSearchParams(window.location.search);
+    const postId = params.get("postId") || params.get("id") || params.get("post") || params.get("pid");
+
     if (!postId) {
       containerEl.textContent = "Missing post id in URL.";
       return;
     }
 
-    const appData = typeof loadAppData === "function" ? loadAppData() : null;
-    if (!appData) return;
+    const currentUserId = localStorage.getItem("orbit-uid")
+      ? Number(localStorage.getItem("orbit-uid"))
+      : null;
 
-    const post = (appData.posts || []).find((p) => p.id === postId);
-    if (!post) {
+    async function fetchPost() {
+      const res = await fetch(`${API_BASE}/api/posts?id=${postId}`);
+      if (!res.ok) return null;
+      return res.json();
+    }
+
+    let post;
+    try {
+      post = await fetchPost();
+    } catch (err) {
+      containerEl.textContent = "Failed to load post.";
+      return;
+    }
+
+    if (!post || post.error) {
       containerEl.textContent = "Post not found.";
       return;
     }
 
     initPostsList(containerEl, {
-      appData,
+      currentUserId,
       posts: [post],
       showDelete: true,
+      showCommentForm: true,
+      onRefresh: async () => {
+        const p = await fetchPost();
+        return p && !p.error ? [p] : [];
+      },
       onDelete: () => {
         window.location.href = "../feed/feed.html";
       },
-      showCommentForm: true,
-      sort: "newest",
     });
   }
 
   window.OrbitPosts = {
     initPostsList,
     initSinglePostPage,
-    getFeedPosts,
-    getUserPosts,
     buildUsersById,
   };
 

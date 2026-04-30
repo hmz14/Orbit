@@ -1,3 +1,4 @@
+const API = "http://localhost:3000";
 
 const registerForm = document.getElementById("register-form");
 const feedbackEl   = document.getElementById("register-feedback");
@@ -5,16 +6,6 @@ const passwordEl   = document.getElementById("reg-password");
 
 function showMessage(msg) {
   feedbackEl.textContent = msg;
-}
-
-function nextUserId(users) {
-  let biggest = 0;
-  for (let i = 0; i < users.length; i++) {
-    const piece = users[i].id.replace("u", "");
-    const num = Number(piece);
-    if (num > biggest) biggest = num;
-  }
-  return "u" + (biggest + 1);
 }
 
 const rules = {
@@ -39,7 +30,7 @@ passwordEl.addEventListener("input", () => {
   validatePassword(passwordEl.value);
 });
 
-registerForm.addEventListener("submit", (event) => {
+registerForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const username = document.getElementById("reg-username").value.trim();
@@ -65,37 +56,29 @@ registerForm.addEventListener("submit", (event) => {
     return;
   }
 
-  const appData = loadAppData();
+  try {
+    const res = await fetch(`${API}/api/users`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, email, password }),
+    });
 
-  const sameEmail = appData.users.filter(
-    (u) => u.email.toLowerCase() === email.toLowerCase()
-  );
-  if (sameEmail.length > 0) {
-    showMessage("That email is already registered.");
-    return;
+    if (res.status === 409) {
+      showMessage("That username or email is already registered.");
+      return;
+    }
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      showMessage(err.error || "Registration failed. Please try again.");
+      return;
+    }
+
+    const user = await res.json();
+    localStorage.setItem("orbit-uid", user.id);
+    window.location.href = "../feed/feed.html";
+  } catch (err) {
+    console.error("Register error:", err);
+    showMessage("Could not connect to server. Is it running?");
   }
-
-  const sameName = appData.users.filter(
-    (u) => u.username.toLowerCase() === username.toLowerCase()
-  );
-  if (sameName.length > 0) {
-    showMessage("That username is taken.");
-    return;
-  }
-
-  const newUser = {
-    id: nextUserId(appData.users),
-    username: username,
-    email: email,
-    password: password,
-    profilePicture: "images/default.png",
-    bio: "",
-    following: [],
-    followers: []
-  };
-
-  appData.users.push(newUser);
-  saveAppData(appData);
-
-  window.location.href = "../login/login.html";
 });
