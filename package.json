@@ -1,6 +1,17 @@
 {
+  "name": "Orbit",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "static": "npx serve -l 8080 ."
+  },
   "dependencies": {
     "@prisma/client": "^5.22.0",
-    "prisma": "^5.22.0"
+    "next": "^15.3.1",
+    "prisma": "^5.22.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
   }
 }
