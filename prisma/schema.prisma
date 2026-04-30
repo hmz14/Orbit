@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             Int       @id @default(autoincrement())
+  username       String    @unique
+  email          String    @unique
+  password       String
+  role           String    @default("USER")
+  profilePicture String?
+  bio            String?
+  createdAt      DateTime  @default(now())
+
+  posts          Post[]
+  comments       Comment[]
+  likes          Like[]
+
+  following      Follow[]  @relation("UserFollowing")
+  followers      Follow[]  @relation("UserFollowers")
+}
+
+model Post {
+  id          Int        @id @default(autoincrement())
+  content     String
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  authorId    Int
+  author      User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  comments    Comment[]
+  likes       Like[]
+  images      String?
+}
+
+model Comment {
+  id          Int       @id @default(autoincrement())
+  content     String
+  createdAt   DateTime  @default(now())
+
+  authorId    Int
+  postId      Int
+
+  author      User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  post        Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+model Like {
+  createdAt   DateTime  @default(now())
+
+  userId      Int
+  postId      Int
+
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post        Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@id([userId, postId])
+}
+
+model Follow {
+  createdAt     DateTime  @default(now())
+
+  followerId    Int
+  followingId   Int
+
+  follower      User      @relation("UserFollowing", fields: [followerId], references: [id], onDelete: Cascade)
+  following     User      @relation("UserFollowers", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@id([followerId, followingId])
+}
