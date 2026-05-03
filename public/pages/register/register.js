@@ -1,4 +1,4 @@
-const API = "http://localhost:3000";
+const API = "";
 
 const registerForm = document.getElementById("register-form");
 const feedbackEl   = document.getElementById("register-feedback");
@@ -33,6 +33,7 @@ passwordEl.addEventListener("input", () => {
 registerForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
+  const name     = document.getElementById("reg-name").value.trim();
   const username = document.getElementById("reg-username").value.trim();
   const email    = document.getElementById("reg-email").value.trim();
   const password = passwordEl.value;
@@ -62,7 +63,7 @@ registerForm.addEventListener("submit", async (event) => {
     const res = await fetch(`${API}/api/users`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, email, password, role }),
+      body: JSON.stringify({ name, username, email, password, role }),
     });
 
     if (res.status === 409) {

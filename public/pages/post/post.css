@@ -53,11 +53,11 @@
 }
 
 .top-link:hover {
-  color: #4f46e5;
+  color: #2FAFA3;
 }
 
 .top-link-logout {
-  color: #4f46e5;
+  color: #2FAFA3;
 }
 
 .nav-avatar {
@@ -90,8 +90,8 @@
 
 .post-back-btn:hover {
   background: #f3f4f6;
-  color: #4f46e5;
-  border-color: #c7d2fe;
+  color: #2FAFA3;
+  border-color: #b2e8e5;
 }
 
 .post-page-main {
@@ -135,8 +135,8 @@
 }
 
 .orbit-post-clickable:hover {
-  border-color: #c7d2fe;
-  box-shadow: 0 4px 20px rgba(79, 70, 229, 0.1), 0 1px 4px rgba(0,0,0,0.04);
+  border-color: #b2e8e5;
+  box-shadow: 0 4px 20px rgba(47, 175, 163, 0.1), 0 1px 4px rgba(0,0,0,0.04);
 }
 
 .orbit-post-top {
@@ -168,9 +168,9 @@
   height: 44px;
   border-radius: 50%;
   object-fit: cover;
-  background: #eef2ff;
+  background: #e6f7f6;
   flex-shrink: 0;
-  border: 2px solid #e0e7ff;
+  border: 2px solid #ccf0ee;
   box-shadow: 0 0 0 1px #fff inset;
 }
 
@@ -295,8 +295,8 @@
 }
 
 .orbit-action-btn:hover:not(:disabled) {
-  background: #f5f5ff;
-  color: #4f46e5;
+  background: #f0fafa;
+  color: #2FAFA3;
 }
 
 .orbit-action-btn:disabled {
@@ -418,9 +418,9 @@
 }
 
 .orbit-comment-input:focus {
-  border-color: #a5b4fc;
+  border-color: #7dd3d0;
   background: #fff;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.08);
+  box-shadow: 0 0 0 3px rgba(47, 175, 163, 0.08);
 }
 
 .orbit-comment-input:disabled {
@@ -436,7 +436,7 @@
 }
 
 .orbit-btn-primary {
-  background: #4f46e5;
+  background: linear-gradient(135deg, #2FAFA3, #4FD1C5);
   border: none;
   color: #fff;
   border-radius: 10px;
@@ -450,7 +450,7 @@
 }
 
 .orbit-btn-primary:hover:not(:disabled) {
-  background: #4338ca;
+  background: linear-gradient(135deg, #269e93, #2FAFA3);
   transform: translateY(-1px);
 }
 

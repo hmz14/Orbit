@@ -1,4 +1,4 @@
-const API = "http://localhost:3000";
+const API = "";
 const loginForm = document.getElementById("login-form");
 const feedbackEl = document.getElementById("login-feedback");
 

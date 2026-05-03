@@ -1,3 +1,4 @@
+import BackButton from "../BackButton";
 import prisma from "../../../lib/prisma";
 
 function getMonthStart() {
@@ -137,6 +138,7 @@ export default async function MyStatisticsPage({ searchParams }) {
           <img src="/assets/icons/orbit_logo.png" alt="Orbit" style={s.brandLogo} />
           <span style={s.brandText}>Statistics</span>
         </div>
+        <BackButton style={s.backBtn} />
       </header>
 
       {/* Body */}
@@ -224,6 +226,21 @@ const s = {
     background: "#ffffff",
     borderBottom: "1px solid #e4e6f0",
   },
+  backBtn: {
+    display: "flex",
+    alignItems: "center",
+    gap: "6px",
+    padding: "8px 16px",
+    borderRadius: "8px",
+    border: "1px solid #e4e6f0",
+    background: "#f8f9fd",
+    color: "#4b5073",
+    fontSize: "0.875rem",
+    fontWeight: 600,
+    textDecoration: "none",
+    cursor: "pointer",
+    transition: "background 0.15s",
+  },
   brand: { display: "flex", alignItems: "center", gap: "10px" },
   brandLogo: { height: "32px", width: "auto", objectFit: "contain" },
   brandText: { fontSize: "1.2rem", fontWeight: 800, color: "#1e2235", letterSpacing: "-0.3px" },
@@ -285,7 +302,7 @@ const s = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    color: "#6366f1",
+    color: "#4FD1C5",
   },
   ovLabel: { fontSize: "0.8rem", fontWeight: 600, color: "#8b90a8", margin: "0 0 4px" },
   ovValue: { display: "block", fontSize: "1.8rem", fontWeight: 800, color: "#1e2235", lineHeight: 1.1, marginBottom: "4px", overflowWrap: "anywhere" },

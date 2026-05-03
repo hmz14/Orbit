@@ -1,5 +1,5 @@
 (function () {
-  const API = "http://localhost:3000";
+  const API = "";
 
   const currentUserId = localStorage.getItem("orbit-uid")
     ? Number(localStorage.getItem("orbit-uid"))

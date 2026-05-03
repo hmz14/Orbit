@@ -1,5 +1,5 @@
 (function () {
-  const API = "http://localhost:3000";
+  const API = "";
 
   const currentUserId = localStorage.getItem("orbit-uid")
     ? Number(localStorage.getItem("orbit-uid"))
@@ -100,7 +100,7 @@
     const src = getAvatarSrc(currentUser);
     meAvatarEl.src    = src;
     aboutAvatarEl.src = src;
-    aboutNameEl.textContent   = currentUser.username;
+    aboutNameEl.textContent   = currentUser.name || currentUser.username;
     aboutHandleEl.textContent = toHandle(currentUser.username);
     aboutBioEl.textContent    = currentUser.bio && currentUser.bio.trim()
       ? currentUser.bio
@@ -124,7 +124,7 @@
     const textWrap = document.createElement("div");
     const name     = document.createElement("p");
     name.className = "people-item-name";
-    name.textContent = u.username;
+    name.textContent = u.name || u.username;
 
     const handle = document.createElement("p");
     handle.className = "people-item-handle";
@@ -136,7 +136,7 @@
     left.appendChild(textWrap);
 
     left.style.cursor = "pointer";
-    left.title = "View " + u.username + "'s profile";
+    left.title = "View " + (u.name || u.username) + "'s profile";
     left.addEventListener("click", () => {
       const url = new URL("../profile/profile.html", window.location.href);
       url.searchParams.set("userId", u.id);
@@ -160,7 +160,7 @@
 
   function renderPeopleYouMayKnow() {
     const others = allUsers.filter(
-      (u) => u.id !== currentUserId && !followingIds.includes(u.id)
+      (u) => u.id !== currentUserId && !followingIds.includes(u.id) && u.role !== "ADMIN"
     );
 
     peopleListEl.innerHTML = "";
@@ -179,7 +179,7 @@
 
   function renderPeopleMoreList() {
     const others = allUsers.filter(
-      (u) => u.id !== currentUserId && !followingIds.includes(u.id)
+      (u) => u.id !== currentUserId && !followingIds.includes(u.id) && u.role !== "ADMIN"
     );
 
     const q = (peopleMoreSearchEl && peopleMoreSearchEl.value ? peopleMoreSearchEl.value : "")
@@ -239,7 +239,7 @@
       const textWrap = document.createElement("div");
       const name     = document.createElement("p");
       name.className = "people-item-name";
-      name.textContent = u.username;
+      name.textContent = u.name || u.username;
 
       const handle = document.createElement("p");
       handle.className = "people-item-handle";
@@ -251,7 +251,7 @@
       left.appendChild(textWrap);
 
       left.style.cursor = "pointer";
-      left.title = "View " + u.username + "'s profile";
+      left.title = "View " + (u.name || u.username) + "'s profile";
       left.addEventListener("click", () => {
         const url = new URL("../profile/profile.html", window.location.href);
         url.searchParams.set("userId", u.id);
@@ -378,6 +378,7 @@
         body: JSON.stringify({
           content: text || "(shared an image)",
           authorId: currentUserId,
+          images: pendingImages.length > 0 ? pendingImages : undefined,
         }),
       });
 

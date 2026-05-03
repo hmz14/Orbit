@@ -38,7 +38,7 @@ body {
 .brand-name {
   font-size: 1.2rem;
   font-weight: 800;
-  color: #4f46e5;
+  color: #2FAFA3;
   letter-spacing: -0.3px;
 }
 
@@ -60,15 +60,15 @@ body {
 }
 
 .top-link:hover {
-  color: #4f46e5;
+  color: #2FAFA3;
 }
 
 .top-link-active {
-  color: #4f46e5;
+  color: #2FAFA3;
 }
 
 .top-link-logout {
-  color: #4f46e5;
+  color: #2FAFA3;
 }
 
 .feed-page {
@@ -131,7 +131,7 @@ body {
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
-  background: #eef2ff;
+  background: #e6f7f6;
   flex-shrink: 0;
 }
 
@@ -149,7 +149,7 @@ body {
 }
 
 .create-post-textarea:focus {
-  border-color: #4f46e5;
+  border-color: #2FAFA3;
   background: #fff;
 }
 
@@ -183,9 +183,9 @@ body {
 }
 
 .cp-upload-btn:hover {
-  background: #f0f4ff;
-  color: #4f46e5;
-  border-color: #c7d2fe;
+  background: #f0fafa;
+  color: #2FAFA3;
+  border-color: #b2e8e5;
 }
 
 .cp-image-previews {
@@ -246,14 +246,14 @@ body {
 }
 
 .btn-primary {
-  background: #4f46e5;
-  border-color: #4f46e5;
+  background: linear-gradient(135deg, #2FAFA3, #4FD1C5);
+  border-color: #2FAFA3;
   color: #fff;
 }
 
 .btn-primary:hover {
-  background: #4338ca;
-  border-color: #4338ca;
+  background: linear-gradient(135deg, #269e93, #2FAFA3);
+  border-color: #269e93;
 }
 
 .btn-secondary {
@@ -309,7 +309,7 @@ body {
   height: 36px;
   border-radius: 50%;
   object-fit: cover;
-  background: #eef2ff;
+  background: #e6f7f6;
   flex-shrink: 0;
 }
 
@@ -347,9 +347,9 @@ body {
 }
 
 .follow-btn.following {
-  background: #eef2ff;
-  border-color: #c7d2fe;
-  color: #4338ca;
+  background: #e6f7f6;
+  border-color: #b2e8e5;
+  color: #269e93;
 }
 
 .about-user-row {
@@ -364,7 +364,7 @@ body {
   height: 48px;
   border-radius: 50%;
   object-fit: cover;
-  background: #eef2ff;
+  background: #e6f7f6;
   flex-shrink: 0;
 }
 
@@ -466,7 +466,7 @@ body {
 }
 
 .people-search:focus {
-  border-color: #4f46e5;
+  border-color: #2FAFA3;
 }
 
 .people-more-list {

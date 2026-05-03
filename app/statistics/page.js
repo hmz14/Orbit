@@ -1,4 +1,5 @@
 import Link from "next/link";
+import BackButton from "./BackButton";
 import prisma from "../../lib/prisma";
 
 function StatCard({ label, value, detail }) {
@@ -84,9 +85,12 @@ export default async function StatisticsPage() {
           <p style={styles.eyebrow}>Orbit analytics</p>
           <h1 style={styles.title}>Platform statistics</h1>
         </div>
-        <Link href="/statistics/my" style={styles.link}>
-          My statistics
-        </Link>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <BackButton style={styles.backBtn} />
+          <Link href="/statistics/my" style={styles.link}>
+            My statistics
+          </Link>
+        </div>
       </header>
 
       <section style={styles.grid} aria-label="Platform statistics">
@@ -156,6 +160,20 @@ const styles = {
     textDecoration: "none",
     fontWeight: 700,
     whiteSpace: "nowrap",
+  },
+  backBtn: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "6px",
+    border: "1px solid #c9d6cd",
+    borderRadius: "8px",
+    color: "#17202a",
+    padding: "10px 14px",
+    textDecoration: "none",
+    fontWeight: 700,
+    whiteSpace: "nowrap",
+    background: "transparent",
+    cursor: "pointer",
   },
   grid: {
     display: "grid",

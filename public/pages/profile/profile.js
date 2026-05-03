@@ -1,4 +1,4 @@
-const API = "http://localhost:3000";
+const API = "";
 
 // ---- DOM refs ----
 const guestEl             = document.getElementById("profile-guest");
@@ -13,6 +13,7 @@ const editBtn             = document.getElementById("editProfileBtn");
 const followBtn           = document.getElementById("followProfileBtn");
 const editTabEl           = document.getElementById("editProfileTab");
 const editFormEl          = document.getElementById("editProfileForm");
+const editNameEl          = document.getElementById("edit-name");
 const editUsernameEl      = document.getElementById("edit-username");
 const editEmailEl         = document.getElementById("edit-email");
 const editBioEl           = document.getElementById("edit-bio");
@@ -165,7 +166,7 @@ function refreshHeader() {
     pcpAvatarEl.onerror = () => { pcpAvatarEl.src = PLACEHOLDER_AVATAR; };
   }
 
-  document.getElementById("profile-username").textContent = targetUser.username;
+  document.getElementById("profile-username").textContent = targetUser.name || targetUser.username;
   profileHandleEl.textContent = toHandle(targetUser.username);
 
   if (emailEl) {
@@ -238,6 +239,7 @@ function setupEditForm() {
 
   const openEditTab = () => {
     closeAllDropdowns();
+    if (editNameEl)     editNameEl.value     = targetUser.name     || "";
     editUsernameEl.value = targetUser.username || "";
     editEmailEl.value    = targetUser.email    || "";
     editBioEl.value      = targetUser.bio      || "";
@@ -315,13 +317,14 @@ function setupEditForm() {
 
   editFormEl.addEventListener("submit", async (e) => {
     e.preventDefault();
+    const newName     = (editNameEl     ? editNameEl.value     : "").trim();
     const newUsername = (editUsernameEl.value || "").trim();
     const newEmail    = (editEmailEl.value    || "").trim();
     const newBio      = (editBioEl.value      || "").trim();
     if (!newUsername) { editUsernameEl.focus(); return; }
     if (!newEmail)    { editEmailEl.focus();    return; }
 
-    const body = { username: newUsername, email: newEmail, bio: newBio };
+    const body = { name: newName || null, username: newUsername, email: newEmail, bio: newBio };
     if (pendingAvatarBase64) body.profilePicture = pendingAvatarBase64;
 
     try {
@@ -457,6 +460,7 @@ function setupCreatePost() {
         body: JSON.stringify({
           content: text || "(shared an image)",
           authorId: currentUserId,
+          images: pendingPostImages.length > 0 ? pendingPostImages : undefined,
         }),
       });
 
@@ -517,7 +521,7 @@ function setupUsersModal() {
 
       const name = document.createElement("span");
       name.className = "users-modal-name";
-      name.textContent = u.username;
+      name.textContent = u.name || u.username;
 
       const handle = document.createElement("span");
       handle.className = "users-modal-handle";

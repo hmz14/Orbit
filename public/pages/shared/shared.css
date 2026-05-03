@@ -1,8 +1,8 @@
 :root {
 
-    --color-primary: #4f46e5;
-    --color-primary-dark: #3730a3;
-    --color-secondary: #6366f1;
+    --color-primary: #2FAFA3;
+    --color-primary-dark: #269e93;
+    --color-secondary: #4FD1C5;
     --color-accent: #22c55e;
  
     --color-text: #111827;
@@ -10,7 +10,7 @@
  
     --color-bg: #f5f7fb;
     --color-white: #ffffff;
-    --color-surface: #eef2ff;
+    --color-surface: #e6f7f6;
     --color-border: #e5e7eb;
  
     --shadow-sm: 0 4px 10px rgba(0, 0, 0, 0.05);
@@ -30,7 +30,7 @@
     --text-lg: 18px;
     --text-xl: 24px;
  
- }
+}
 
 .site-footer {
   background: #000;

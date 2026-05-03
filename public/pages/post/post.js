@@ -1,5 +1,5 @@
 (function () {
-  const API_BASE = "http://localhost:3000";
+  const API_BASE = "";
 
   function ensurePostStyles() {
     if (document.getElementById("orbit-post-styles")) return;
@@ -66,6 +66,15 @@
   }
 
   const PLACEHOLDER = "../../assets/images/profile.svg";
+
+  function resolvePostImageSrc(src) {
+    const s = safeStr(src);
+    if (!s) return s;
+    if (s.startsWith("http://") || s.startsWith("https://") || s.startsWith("data:")) return s;
+    if (s.startsWith("../../")) return s;
+    if (s.startsWith("assets/")) return "../../" + s;
+    return "../../assets/" + s;
+  }
 
   function buildUsersById(users) {
     const map = {};
@@ -181,7 +190,7 @@
       imagesEl.className = "orbit-post-images orbit-post-images--" + (images.length < 4 ? images.length : 4);
       images.slice(0, 4).forEach((src) => {
         const img = document.createElement("img");
-        img.src = src;
+        img.src = resolvePostImageSrc(src);
         img.className = "orbit-post-image";
         img.alt = "post image";
         img.loading = "lazy";

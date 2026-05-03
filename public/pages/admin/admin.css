@@ -41,7 +41,7 @@ body {
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  background: #6366f1;
+  background: #4FD1C5;
   color: #fff;
   font-size: 0.95rem;
   font-weight: 700;
@@ -52,7 +52,7 @@ body {
   justify-content: center;
   transition: background 0.15s;
 }
-.admin-avatar:hover { background: #4f46e5; }
+.admin-avatar:hover { background: #2FAFA3; }
 
 /* ── Page body ──────────────────────────────── */
 .admin-body {
@@ -123,7 +123,7 @@ body {
   white-space: nowrap;
   flex-shrink: 0;
 }
-.date-badge svg { color: #6366f1; }
+.date-badge svg { color: #4FD1C5; }
 
 /* ── Overview grid (4 big cards) ────────────── */
 .overview-grid {
@@ -159,7 +159,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #6366f1;
+  color: #4FD1C5;
 }
 
 .ov-info { min-width: 0; }
@@ -259,7 +259,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #6366f1;
+  color: #4FD1C5;
   margin-bottom: 12px;
 }
 

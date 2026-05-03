@@ -12,6 +12,7 @@ model User {
   username       String   @unique
   email          String   @unique
   password       String
+  name           String?
   role           String   @default("USER")
   profilePicture String?
   bio            String?
@@ -28,6 +29,7 @@ model User {
 model Post {
   id        Int      @id @default(autoincrement())
   content   String
+  images    String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
